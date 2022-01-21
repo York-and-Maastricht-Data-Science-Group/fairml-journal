@@ -41,9 +41,11 @@
 %% \usepackage{amsthm}
 
 %% Additional packages
+\usepackage{epstopdf}
 \usepackage{url}
 \usepackage{breakurl}
 \usepackage[breaklinks]{hyperref}
+\usepackage{wrapfig}
 
 %% The lineno packages adds line numbers. Start line numbering with
 %% \begin{linenumbers}, end it with \end{linenumbers}. Or switch it on
@@ -99,14 +101,14 @@
 %%             state={},
 %%             country={}}
 
-\author{}
+\author{Alfa Yohannis, Dimitris Kolovos}
 
-\affiliation{organization={},%Department and Organization
-            addressline={}, 
-            city={},
-            postcode={}, 
-            state={},
-            country={}}
+\affiliation{organization={Department of Computer Science, University of York},%Department and Organization
+%            addressline={}, 
+            city={York},
+%            postcode={}, 
+%            state={},
+            country={United Kingdom}}
 
 \begin{abstract}
 Models produced by machine learning are not guaranteed free from bias, particularly when trained and tested with data produced in discriminatory environments. The bias can be unethically acceptable, especially when the data contains sensitive attributes, such as sex, race, age, etc. Some approaches have contributed to mitigating such bias by providing bias metrics and mitigation algorithms, and they are already supported by most fair machine learning toolkits. FairML brings a model-based approach to improve the fairness of machine learning by levelling up the abstraction and automatically generating the code and reports of bias measurement and mitigation.
@@ -189,22 +191,124 @@ Publicly available commercial face recognition online services provided by Micro
 \subsection{Bias Metrics}
 \label{sec:bias_metrics}
 
+
+
+Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai} is a metric computed as the difference of the rate of favourable outcomes received by the unprivileged group to the privileged group. The ideal value of this metric is 0. Fairness for this metric is between -0.1 and 0.1.
+
+Equal Opportunity Difference \cite{bellamy2018ai} is a metric computed as the difference of true positive rates between the unprivileged and the privileged groups. 
+The true positive rate is the ratio of true positives to the total number of actual positives for a given group. The ideal value is 0. A value of $<$ 0 implies higher benefit for the privileged group and a value $>$ 0 implies higher benefit for the unprivileged group. Fairness for this metric is between -0.1 and 0.1.
+
+Average Odds Difference \cite{bellamy2018ai} is a metric computed as average difference of false positive rate (false positives / negatives) and true positive rate (true positives / positives) between unprivileged and privileged groups.
+The ideal value of this metric is 0. A value of $<$ 0 implies higher benefit for the privileged group and a value $>$ 0 implies higher benefit for the unprivileged group.
+Fairness for this metric is between -0.1 and 0.1
+
+Disparate Impact \cite{feldman2015disparate,bellamy2018ai} is a metric computed as the ratio of rate of favourable outcome for the unprivileged group to that of the privileged group.
+The ideal value of this metric is 1.0 A value $<$ 1 implies higher benefit for the privileged group and a value $>$1 implies a higher benefit for the unprivileged group.
+Fairness for this metric is between 0.8 and 1.25.
+
+5. Theil Index \cite{conceicao2000theyoung,bellamy2018ai}
+Computed as the generalized entropy of benefit for all individuals in the dataset, with alpha = 1. It measures the inequality in benefit allocation for individuals.
+A value of 0 implies perfect fairness. Fairness is indicated by lower scores, higher scores are problematic.
+
+
+ Fairness Measures (Zehlike et al., 2017), for example,
+provides several fairness metrics, including difference of
+means, disparate impact, and odds ratio. A set of datasets
+is also provided, though some datasets are not in the pub-
+lic domain and need explicit permission from the owners
+to access/use the data. Similarly, FairML (Adebayo, 2016)
+provides an auditing tool for predictive models by quantify-
+ing the relative effects of various inputs on a models predic-
+tions. This, in turn, can be used to assess the models fair-
+ness. FairTest (Tram`
+
+er et al., 2017), on the other hand, ap-
+proaches the task of detecting biases in a dataset by check-
+ing for associations between predicted labels and protected
+attributes. The methodology also provides a way to iden-
+tify regions of the input space where an algorithm might
+incur unusually high errors. This toolkit also includes a
+rich catalog of datasets. Aequitas (Stevens et al., 2018) is
+another auditing toolkit for data scientists as well as pol-
+icy makers; it has a Python library as well as an associated
+web site where data can be uploaded for bias analysis. It
+offers several fairness metrics, including demographic or
+statistical parity and disparate impact, along with a ”fair-
+ness tree” to help users identify the correct metric to use for
+their particular situation. Aequitas’s license does not allow
+
+
+AI Fairness 360
+
+commercial use. Finally, Themis (Galhotra et al., 2017) is
+an open source bias toolbox that automatically generates
+test suites to measure discrimination in decisions made by
+a predictive system.
+
 \subsection{Bias Mitigation}
 \label{sec:bias_mitigation}
 
-\subsection{Bias Metrics and Mitigation Tools}
-\label{sec:bias_metrics_and_mitigation_tools}
+A handful of toolkits address both bias detection as well
+as bias mitigation. Themis-ML (Bantilan, 2018) is one
+such repository that provides a few fairness metrics, such
+as mean difference, as well as some bias mitigation algo-
+rithms, such as relabeling (Kamiran \& Calders, 2012), ad-
+ditive counterfactually fair estimator (Kusner et al., 2017),
+and reject option classiﬁcation (Kamiran et al., 2012). The
+repository contains a subset of the methods described in the
+paper. Fairness Comparison (Friedler et al., 2018) is one of
+the more extensive libraries. It includes several bias detec-
+tion metrics as well as bias mitigation methods, including
+disparate impact remover (Feldman et al., 2015), prejudice
+remover (Kamishima et al., 2012), and two-Naive Bayes
+(Calders \& Verwer, 2010). Written primarily as a test-bed
+to allow different bias metrics and algorithms to be com-
+pared in a consistent way, it also allows the addition of ad-
+ditional algorithms and datasets.
+
+\subsection{Toolkits}
+\label{sec:toolkits}
 
 Lee et al. \cite{lee2021landscape} studied the 
 
 \section{Model-based Software Development}
 \label{sec:model_based_software_development}
+In software engineering, Model-Driven Sofware Development (MDSE) is a development paradigm of software in which models are used as the primary artefacts to drive the process of software development. The models are used as bases/references to (semi)automatically generate the target software \cite{brambilla2017model}. MDSE aims for a productive environment by speeding up development speed through artefact generation and managing complexity by raising up abstraction level in the form of simpler modelling languages \cite{volter2013model}.
 
 \section{FairML}
 \label{sec:fairml}
 
-\subsection{Architecture}
-\label{sec:architecture}
+\subsection{Domain Analysis}
+\label{sec:domain_analysis}
+In order to model bias measurement and mitigation in machine learning, important constructs of the domain should be represented in the metamodel. Thus, we analysed how the toolkits in Section \ref{sec:toolkits} are implemented in their code repositories. The analysis covers identifying constructs and  their order in demos and examples and gathering all parameters required for each class and method.
+We identify that, in general, all the toolkits perform similar activities and can be grouped into the phases (preprocessing, inprocessing, postprocessing) where they are applied in the machine learning pipeline. 
+
+Every processing starts with a task setting up a dataset. In the task, users define the source of the dataset which is commonly a CSV file. Users also determine the target/predicted attribute, the favourable class in the predicted attribute, the sensitive attributes as well as the privileged and unprivileged classes in the ssensitive attributes. 
+
+Bias mitigation in \textit{preprocessing} can be done without training any model and performing any prediction since the transformation to reduce biases is only applied to datasets. However, if users need to check the accuracy of the model trained from original and after-mitigation datasets then training and prediction have to be performed as well.
+
+Bias mitigation in \textit{inprocessing} requires users to train the data and make prediction. 
+
+\begin{itemize}
+	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with setting up the dataset. In the setup, users choose which 
+	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with settting up the dataset. 
+	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with setting up the dataset. 
+\end{itemize}
+
+
+
+\begin{enumerate}
+\item Define Datasets. 
+\item Measure Bias. 
+\item Mitigate Bias.
+\item Mitigate Bias .
+\item Train Model.
+\item 
+
+\end{enumerate}
+
+\subsection{Design}
+\label{sec:design}
 
 \subsection{Use Cases}
 \label{sec:use_Cases}
@@ -213,8 +317,24 @@ Lee et al. \cite{lee2021landscape} studied the
 \label{sec:evaluation}
 
 
+
+Ratio number of lines written : generated
+
+Expressiveness / coverage
+
+Code generated performance
+
+Feedback from Users
+
+
 \subsection{Method}
 \label{sec:method}
+
+Adult Census Income Dataset\footnote{\url{https://archive.ics.uci.edu/ml/datasets/adult}}
+
+German Credit Dataset\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Statlog+\%28German+Credit+Data\%29}}
+
+Compas ProPublica Recidivism\footnote{\url{https://github.com/propublica/compas-analysis}}
 
 \subsection{Results}
 \label{sec:Results}

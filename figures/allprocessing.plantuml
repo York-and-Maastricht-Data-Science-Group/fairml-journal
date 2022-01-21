@@ -1,0 +1,42 @@
+@startuml
+title "Preprocessing, Inprocessing, and Postprocessing\nBias Mitigation"
+start
+:Setup dataset;
+
+switch (phase of processing?)
+  case (preprocessing)
+    if (Check accuracy?) then (yes)
+      :Train model;
+      :Predict;
+    else(no)
+    endif
+    :Measure initial bias;
+    ->original\ndataset;
+    :Mitigate bias;
+    ->transformed\ndataset;
+    if (Check accuracy?) then (yes)
+      :Train model;
+      :Predict;
+    else(no)
+    endif
+    :Measure mitigated bias;
+  case (ineprocessing)
+    :Train model;
+    :Predict;
+    :Measure initial bias;
+    ->original\nmodel;
+    :Mitigate bias;
+    ->transformed\nmodel;
+    :Predict;
+    :Measure mitigated bias;
+  case(postprocessing)
+    :Train model;
+    :Predict;
+    :Measure initial bias;
+    ->original\nprediction;
+    :Mitigate bias;
+    ->transformed\nprediction;
+    :Measure mitigated bias;
+endswitch
+stop
+@enduml

@@ -1,0 +1,22 @@
+@startuml
+title "Bias Mitigation Workflow"
+start
+:Setup dataset;
+if (not preprocessing?) then (yes)
+  :Train model;
+  :Predict;
+else(no)
+endif
+-> original dataset\n model\n, and prediction; 
+:Measure initial bias;
+:Mitigate bias;
+-> transformed dataset;
+if (not preprocessing?) then (yes)
+  :Train model;
+  :Predict;
+else(no)
+endif
+:Measure mitigated bias;  
+  
+stop
+@enduml

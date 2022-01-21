@@ -1,0 +1,14 @@
+@startuml
+title "Inprocessing\nBias Mitigation"
+start
+:Setup dataset;
+:Train model;
+:Predict;
+:Measure initial bias;
+->original\nmodel;
+:Mitigate bias;
+->transformed\nmodel;
+:Predict;
+:Measure mitigated bias;
+stop
+@enduml

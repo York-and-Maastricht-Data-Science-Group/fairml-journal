@@ -1,42 +1,83 @@
 @startuml
-title "Preprocessing, Inprocessing, and Postprocessing\nBias Mitigation"
 start
 :Setup dataset;
 
-switch (phase of processing?)
-  case (preprocessing)
-    if (Check accuracy?) then (yes)
-      :Train model;
+if (Preprocessing only?) then (yes)
+  if (Check accuracy?) then (yes)
+    ->Original\nDatasets;
+    :Train Models;
+    ->Original\nModels;
+    :Predict;
+    ->Original\nPredictions;
+  else (no)
+  endif
+else (Others\nCombinations) 
+  ->Original\nDatasets;
+  :Train Models;
+  ->Original\nModels;
+  :Predict;
+  ->Original\nPredictions;
+endif
+:Measure Biases;
+->Original Bias\nMeasurement Results;
+(A)
+
+detach
+(A)
+if (Preprocessing Mitigation?)
+  -> Original\nDatasets;
+  :Mitigate Bias;
+  -> Mitigated\nOriginal\nDatasets;
+else (no)
+endif
+if (Inprocessing Mitigation?) then (Yes)
+  -> Original\nModels;
+  :Mitigate Bias;
+  -> Mitigated\nOriginal\nModels;
+else (no)
+endif
+if (Postprocessing Mitigation?)
+  -> Original\nPredictions;
+  :Mitigate Bias;
+  -> Mitigated\nOriginal\nPredictions;
+else (no)
+endif
+(B)
+
+detach
+(B)
+if (Preprocessing only?) then (yes)
+  if (Check accuracy?) then (yes)
+    -> Mitigated\nOriginal\nDatasets;
+    :Train Models;
+    -> Mitigated\nDataset\nModels;
+    :Predict;
+    -> Mitigated\nDataset\nModel\nPredictions;
+  else (no)
+  endif
+else (no)
+  
+  if (Preprocessing mitigation?) then (yes)
+    -> Mitigated\nOriginal\nDatasets;
+    :Train Models;
+    -> Mitigated\ndataset\nModels;
+  else ((no)\nMitigated\nOriginal\nModels/\nOriginal\nModels) 
+    
+  endif
+
+  if (Inprocessing mitigation?) then (yes)
+      if (Preprocesing\nmitigation?) then (yes)
+        -> Mitigated\nDateset\nModels;
+        :Predict;
+        -> Mitigated\nDataset\nModel\nPreditictons;
+      endif 
+      -> Mitigated\nOriginal\nModels;
       :Predict;
-    else(no)
-    endif
-    :Measure initial bias;
-    ->original\ndataset;
-    :Mitigate bias;
-    ->transformed\ndataset;
-    if (Check accuracy?) then (yes)
-      :Train model;
-      :Predict;
-    else(no)
-    endif
-    :Measure mitigated bias;
-  case (ineprocessing)
-    :Train model;
-    :Predict;
-    :Measure initial bias;
-    ->original\nmodel;
-    :Mitigate bias;
-    ->transformed\nmodel;
-    :Predict;
-    :Measure mitigated bias;
-  case(postprocessing)
-    :Train model;
-    :Predict;
-    :Measure initial bias;
-    ->original\nprediction;
-    :Mitigate bias;
-    ->transformed\nprediction;
-    :Measure mitigated bias;
-endswitch
+      -> Mitigated\nOriginal\nModels\nPredictions\n\n;
+  else ((no)\nOriginal\nPredictions,\nMitigated\nOriginal\nPredictions) 
+  endif 
+endif
+:Measure Biases;
+->Mitigated Bias\nMeasurement Results;
 stop
 @enduml

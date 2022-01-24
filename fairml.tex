@@ -42,9 +42,10 @@
 
 %% Additional packages
 \usepackage{epstopdf}
-\usepackage{url}
-\usepackage{breakurl}
+\usepackage[hyphens]{url}
+\usepackage{xurl}
 \usepackage[breaklinks]{hyperref}
+\usepackage[hyphenbreaks]{breakurl}
 \usepackage{wrapfig}
 
 %% The lineno packages adds line numbers. Start line numbering with
@@ -271,6 +272,8 @@ ditional algorithms and datasets.
 
 Lee et al. \cite{lee2021landscape} studied the 
 
+https://github.com/fairlearn/fairlearn
+
 \section{Model-based Software Development}
 \label{sec:model_based_software_development}
 In software engineering, Model-Driven Sofware Development (MDSE) is a development paradigm of software in which models are used as the primary artefacts to drive the process of software development. The models are used as bases/references to (semi)automatically generate the target software \cite{brambilla2017model}. MDSE aims for a productive environment by speeding up development speed through artefact generation and managing complexity by raising up abstraction level in the form of simpler modelling languages \cite{volter2013model}.
@@ -280,32 +283,44 @@ In software engineering, Model-Driven Sofware Development (MDSE) is a developmen
 
 \subsection{Domain Analysis}
 \label{sec:domain_analysis}
-In order to model bias measurement and mitigation in machine learning, important constructs of the domain should be represented in the metamodel. Thus, we analysed how the toolkits in Section \ref{sec:toolkits} are implemented in their code repositories. The analysis covers identifying constructs and  their order in demos and examples and gathering all parameters required for each class and method.
-We identify that, in general, all the toolkits perform similar activities and can be grouped into the phases (preprocessing, inprocessing, postprocessing) where they are applied in the machine learning pipeline. 
 
-Every processing starts with a task setting up a dataset. In the task, users define the source of the dataset which is commonly a CSV file. Users also determine the target/predicted attribute, the favourable class in the predicted attribute, the sensitive attributes as well as the privileged and unprivileged classes in the ssensitive attributes. 
-
-Bias mitigation in \textit{preprocessing} can be done without training any model and performing any prediction since the transformation to reduce biases is only applied to datasets. However, if users need to check the accuracy of the model trained from original and after-mitigation datasets then training and prediction have to be performed as well.
-
-Bias mitigation in \textit{inprocessing} requires users to train the data and make prediction. 
-
-\begin{itemize}
-	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with setting up the dataset. In the setup, users choose which 
-	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with settting up the dataset. 
-	\item \textbf{Preprocessing}. Mitigating bias in preprocessing starts with setting up the dataset. 
-\end{itemize}
+\subsubsection{Workflow}
+\label{sec:workflow}
 
 
+In order to model bias measurement and mitigation in machine learning, important constructs of the domain should be represented in the metamodel. Thus, we analysed the code repositories of the Fairlearn\footnote{\url{https://github.com/fairlearn/fairlearn}}, 
+Google What-If\footnote{\url{https://github.com/pair-code/what-if-tool}},
+Aequitas\footnote{\url{https://github.com/dssg/aequitas}}, and 
+IBM AI Fairness 360 \footnote{\url{https://github.com/Trusted-AI/AIF360}}
+to understand their use and implementation. The analysis identifies constructs and  the orders of their executions in demos, tutorials, and examples as well as the necessary dependencies required by them, e.g., parameters, classes, initialisation.
+We identify that, in general, all the toolkits perform the workflow presented in Figure \ref{fig:workflow}.
+	
+\begin{figure}
+	\includegraphics[width=\linewidth]{figures/workflow}
+	\caption{The workflow of bias mitigation commonly performed using the toolkits in .}
+	\label{fig:workflow}
+\end{figure}
+	
+Bias mitigation usually starts with setting up datasets (Action A1). In the action, users define the source of every dataset which is commonly a CSV file. They also profile each dataset to determine which attributes are the target/predicted attribute (including the favourable class in the attribute) and the sensitive attributes (including the privileged and unprivileged classes in the attributes).
 
-\begin{enumerate}
-\item Define Datasets. 
-\item Measure Bias. 
-\item Mitigate Bias.
-\item Mitigate Bias .
-\item Train Model.
-\item 
+In Action A2, users define the datasets and classifiers for model training. The training, validation, and test datasets are also set here, whether they are all come from different datasets or the same dataset but split with different ratios. They also select the bias metrics and mitigation algorithms that will be applied to datasets, models, and prediction. 
 
-\end{enumerate}
+Users then train models in Action A3. The training can extend to validation for tuning hyper-parameters to obtain the best models. After that, users make prediction in Action A4 to measure the original accuracies of the models. The obtained accuracies will be compared against the accuracies post bias mitigation.
+Users can skip the training and prediction (A3 and A4) if they only mitigate bias in the datasets, and the accuracies of prediction are not in concern.
+
+Next, users measure the initial biases of the datasets, models, and prediction in Action A5. The scores of initial biases are used as benchmarks later on in the comparison against the scores of mitigated biases (A9). 
+
+In the \textit{Mitigate Bias} action (A6), users apply bias mitigation algorithms to the original datasets, models, and predictions producing their mitigated/transformed versions. If the mitigation produces new, mitigated datasets then they are used to produce new models and predictions. 
+
+
+%In \textit{preprocessing}, users measure the initial biases of an original dataset (\textit{Measure initial bias} action). The measurement can produce several results especially when more than one metric are used. The results are presented in numbers and charts to help usedrs understand the initial biases. After that, the original dataset is copied, and the copy is transformed using a bias mitigation algorithm to produce a less-biased, transformed dataset (\textit{Mitigate bias} action). Bias mitigation in \textit{preprocessing} can be done without training any model and performing any prediction since the transformation to reduce biases is only applied to datasets. However, users can train a model and make prediction if they need to check the accuracies of the models trained from the original and mitigated datasets. 
+%
+%In \textit{inprocessing}, users train a model and make prediction using it. The original model and prediction  are used by bias metrics as parameters to measure original biases (in \textit{Measure initial bias} action). After that, in \textit{Mitigate bias} action, a bias mitigation algorithm is applied to the original model to reduce its bias producing a mitigated model. Afterwards, the model is used to make another prediction.
+
+\subsubsection{Constructs}
+\label{sec:constructs}
+Model-driven approach requires us to identify important constructs so that users only deal with these constructs when constructing models thus reducing complexity. The important constructs identified through our analysis of the toolkits' repositories are as follows. 
+
 
 \subsection{Design}
 \label{sec:design}
@@ -352,10 +367,31 @@ Alfa \cite{cormen2009introduction}
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections
-%% \appendix
+\appendix
 
-%% \section{}
-%% \label{}
+\section{List of Constructs}
+\label{sec:list_of_constructs}
+
+\begin{enumerate}
+	\item Dataset.
+	\item Label or Predicted/Target Attribute.
+	\item Favourable Class/Group.
+	\item Protected/Sensitive Attribute.
+	\item Privileged Group/Class.
+	\item Unprivileged Group/Class.
+	\item Bias Metric.
+	\item Bias Mitigation.
+	\item Classifier.
+	\item Model.
+	\item Prediction.
+	\item Bias Mitigation Algorithm.
+	\item Training.
+	\item Test.
+	\item Validation.
+	\item Accuracy.
+	\item Bias.
+	\item Parameters.
+\end{enumerate}
 
 %% For citations use: 
 %%       \citet{<label>} ==> Jones et al. [21]

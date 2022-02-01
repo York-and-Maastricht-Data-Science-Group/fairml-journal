@@ -155,11 +155,11 @@ Data scientists usually work using their intuitions to narrow down the number of
 Model-Driven Sofware Development (MDSE) leverage the abstraction of software development by hiding technical details of implementation that can be automated \cite{brambilla2017model}. Thus, users can focus on important aspects through the use of simpler modelling languages, and the target implementation can be automatically generated, which in turn improve productivity \cite{volter2013model}. The use of MDSE would benefit data scientists since it allows them to search for the best bias mitigation methods for given cases at a higher abstraction level. They also do not have to code the implementation of the search process in general/statistical programming languages since it can be automatically generated and then fine tuned later on. 
 
 The contribution of this research is FairML, a tool that implements MDSE approach to model and automate measuring and mitigating biases in machine learning. 
-\begin{itemize}
+\begin{enumerate}
 \item FairML raises up the abstraction of bias measurement and mitigation so that users can configure their bias mitigation model in YAML (YAML Ain’t Markup Language), a human-friendly declarative language \cite{evans2017yaml}, without having to code in general/statistical programming languages.
 \item FairML supports certain degree of expressiveness which allows users to experiment with different kinds of bias metrics, bias mitigation algorithms, datasets, classifiers, and their parameters to find the best of their combinations that reduces biases but with acceptable accuracy.
 \item It automatically generates Python and Jupyter Notenbook files which users can execute to run measure and mitigate biases on given datasets. All generated files are modifiable and extensible for fine tuning and further development.
-\end{itemize}
+\end{enumerate}
 
 
 
@@ -266,10 +266,20 @@ to allow different bias metrics and algorithms to be com-
 pared in a consistent way, it also allows the addition of ad-
 ditional algorithms and datasets.
 
-\subsection{Toolkits}
-\label{sec:toolkits}
+\section{Model-based Software Development}
+\label{sec:model_based_software_development}
+Model-Driven Sofware Development (MDSE) is a development paradigm of software in which models are used as the primary artefacts to drive the process of software development. The models are used as bases/references to (semi)automatically generate the target software \cite{brambilla2017model}. MDSE aims for a productive environment by speeding up development through artefact generation and managing complexity by raising up abstraction level in the form of simpler modelling languages \cite{volter2013model}. 
 
-Lee et al. \cite{lee2021landscape} studied the 
+\section{Toolkit Selection}
+\label{sec:toolkit_selection}
+
+Lee et al. \cite{lee2021landscape} analysed the landscape of open source toolkits in algorithmic ethics particularly for fairness in machine learning. Based on the criteria that a toolkit is 1) open source, 2) likely to be used by practitioners, 3) implementing fairness-related methodology and through a focus group discussion of data scientists, they eventually selected 6 toolkits -- Aequitas\cite{saleiro2019aequitas}, Google What-If\cite{googlewhatif2020}, Scikit-fairnet/scikit-lego \cite{scikitfairness2022,scikitlego2022}, Fairlearn\cite{bird2020fairlearn}, and IBM AI Fairness 360 \cite{bellamy2018ai} -- as the objects their analysis.  
+
+From these the six toolkits, we evaluate them again to examine if they are applicable to be integrated into our model-based approach. The selected toolkits would be used in the generated code to implement bias mitigation. The main criteria for the selection are 1) it should be open source, 2) it should support bias mitigation, 3) it provides Application Programming Interface (API) to be programmable and integrated into model-based approach, and 4) it supports various bias measurements and mitigation algorithms to enable users to find the best bias mitigation strategies. 
+
+The first criterion is met by all of the toolkits, since they are all open source projects. We excluded Aequitas due to its inability to perform bias mitigation (second criterion); it only supports bias measurement. We also removed Google What-If since it does not have API\footnote{\url{https://groups.google.com/g/what-if-tool/c/zw4Rk5kxPIM}} to be integrated with other applications (third criterion); its customisation is limited to custom prediction function\footnote{\url{https://pair-code.github.io/what-if-tool/get-started/}}. Compared to the rest toolkits, IBM AI Fairness 360 has the most complete features -- it claims it has at least 10 state-of-the-art bias mitigation algorithms and 77 bias metrics\footnote{\url{https://aif360.mybluemix.net/}} -- while Fairlearn and Scikit-fairness/lego come second and third \cite{lee2021landscape}, and all meet the fourth criteria. Thus, we use the four toolkits in our domain analysis prior designing our solution.
+
+%They also identified that there was a lack of consistency between the toolkits in their methodological approaches, and therefore users need to understand them at first before they can use the toolkits properly to meet goals.
 
 \begin{table*}[]
 	\centering
@@ -285,9 +295,7 @@ Lee et al. \cite{lee2021landscape} studied the
 	\end{tabular}
 \end{table*}
 
-\section{Model-based Software Development}
-\label{sec:model_based_software_development}
-In software engineering, Model-Driven Sofware Development (MDSE) is a development paradigm of software in which models are used as the primary artefacts to drive the process of software development. The models are used as bases/references to (semi)automatically generate the target software \cite{brambilla2017model}. MDSE aims for a productive environment by speeding up development speed through artefact generation and managing complexity by raising up abstraction level in the form of simpler modelling languages \cite{volter2013model}.
+
 
 \section{Domain Analysis}
 \label{sec:domain_analysis}
@@ -298,6 +306,7 @@ In order to model bias mitigation in machine learning, important constructs and 
 \label{sec:constructs}
 Model-driven approach requires us to identify important constructs so that users only deal with these constructs when constructing models thus reducing complexity. The important constructs identified through our analysis of the toolkits' repositories are as follows. 
 
+Scikit-fairness consists of three modules
 
 \subsection{Workflows}
 \label{sec:workflows}
@@ -333,27 +342,43 @@ Finally, after mitigated in Action A6, biases are measured again in Action A9. T
 \label{sec:evaluation}
 
 
+\subsection{Internal Evaluation}
+\label{sec:internal_evaluation}
 
-Ratio number of lines written : generated
+\begin{enumerate}
+	\item written code vs. generated code
+	\item code generation speed
+	\item \textbf{Expressiveness?} Can it express the demo and examples provided by the toolkits? Or simulate the experiments in other papers? Does it show similar results?
+\end{enumerate}
 
-Expressiveness / coverage
+\subsection{User Evaluation}
+\label{sec:user_evaluation}
 
-Code generated performance
-
-Feedback from Users
-
-
-\subsection{Method}
-\label{sec:method}
+\begin{enumerate}
+	\item \textbf{RQ1: Does FairML raise the abstraction of bias mitigation processes?}
+	
+	FairML raises the abstraction and reduces the complexity of defining bias mitigation as opposed to describing it in a general programming language, such as Python. 
+	
+	\item \textbf{RQ2: Is FairML expressive enough to define bias mitigation processes?}
+	
+	FairML/YAML is expressive enough to define my bias mitigation processes. 
+	
+	('expressive' can be: it covers the necessary constructs or vocabulary of bias mitigation, I could easily write down what is my mind to define my bias mitigation)
+	
+	\item \textbf{RQ2: Does FairML speed up the development of bias mitigation implementation?}
+	
+	FairML's automated generation of Python code/Jupyter notebook speeds up the development of my bias mitigation code.
+	
+	\item \textbf{RQ4: Does FairML improve productivity in mitigating biases?}
+	
+	FairML (will) improve(s) my productivity in mitigating biases.
+\end{enumerate}
 
 Adult Census Income Dataset\footnote{\url{https://archive.ics.uci.edu/ml/datasets/adult}}
 
 German Credit Dataset\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Statlog+\%28German+Credit+Data\%29}}
 
 Compas ProPublica Recidivism\footnote{\url{https://github.com/propublica/compas-analysis}}
-
-\subsection{Results}
-\label{sec:Results}
 
 \section{Discussion}
 \label{sec:discussion}

@@ -235,13 +235,13 @@
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
 %% page.
-\begin{teaserfigure}
-  \includegraphics[width=\textwidth]{sampleteaser}
-  \caption{Seattle Mariners at Spring Training, 2010.}
-  \Description{Enjoying the baseball game from the third-base
-  seats. Ichiro Suzuki preparing to bat.}
-  \label{fig:teaser}
-\end{teaserfigure}
+%\begin{teaserfigure}
+%  \includegraphics[width=\textwidth]{sampleteaser}
+%  \caption{Seattle Mariners at Spring Training, 2010.}
+%  \Description{Enjoying the baseball game from the third-base
+%  seats. Ichiro Suzuki preparing to bat.}
+%  \label{fig:teaser}
+%\end{teaserfigure}
 
 %%
 %% This command processes the author and affiliation and title
@@ -451,12 +451,12 @@ Finally, after mitigated in Action A6, biases are measured again in Action A9. T
 \label{sec:evaluation}
 In this research, we also evaluated the expressiveness, correctness, productivity, and execution time of FairML. In the expressiveness evaluation, we aimed to answer this question, 
 ``\textit{Can FairML express the use cases of bias mitigation in the real-world?}''. For that, we used the examples provided IBM Fairness AI 360 as the baseline to justify the expressiveness of FairML. 
-the toolkit comes with a number of examples (Tables \ref{tab:loc} and \ref{tab:time}) that demonstrate 
+the toolkit comes with a number of examples (Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}) that demonstrate 
 the usecases of the toolkit in the real-world context. 
 Among 22 examples that comes in version 4.0, we only used 21 of them, 
 since the one that we excluded only explains the use of a class dedicated to yield bias metric explanation in JSON format. We also count the numbers of bias metrics, de-biasing algorithms, classifiers, datasets, and measurement values are there in each example to reveal its complexity. 
 
-We compared the bias metric values measured in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal values or similar values, up to 10\% tolerance, when randomness is required.  
+We compared the bias metric values measured (measurement values) in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal values or similar values, up to 10\% tolerance, when randomness is required.  
 
 %While we aim to minimise the number of manual alteration required in the generated code, there are some usecases where bias mitigations deviate from the common workflow. Therefore, we do expect the generated code would require alteration (e.g., add, update, delete) in some cases to yield similar results to their respective examples. However, we tried to keep the number of alteration to minimum. 
 
@@ -509,10 +509,11 @@ We also measured the execution time of FairML.First, we measured the \textit{gen
 \label{sec:result_and_discussion}
 In this section, we present and discuss the results of our FairML evaluation.
 
-\subsection{Expressiveness and Accuracy}
-\label{sec:expressiveness_and_accuracy}
-Based on our evaluation, FairML was able to reproduce all the scenarios in all the 21 examples in Tables \ref{tab:loc} and \ref{tab:time}. In total, all the scenarios covered 14 different bias mitigation algorithms, 7 bias metrics, 7 datasets, 6 classifiers, and X measurement values.
+\subsection{Expressiveness and Correctness}
+\label{sec:expressiveness_and_correctness}
+Based on our evaluation, FairML was able to reproduce all the scenarios in all the 21 examples in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}. In total, all the scenarios covered 8 unique datasets (Adult, German, Compas, Lawschool GPA, MEPSDataset19, MEPSDataset20, MEPSDataset21), 6 classifiers (Logistic Regression, Linear Regression, Linear SVR, Decision Tree, Kernel Ridge, Random Forest), 13 bias mitigation algorithms (Adversarial Debiasing, Callibrated Equalising Odds, Disparate Impact Remover, Exponentiated Gradient Reduction, Gerryfair, Learning Fair Representation, Reweighing, Meta Fair Classification, Optimized Preprocessing, Reject Option Classification, Prejudice Remover, Grid Search Reduction, Reweighing Meta), and 15 bias metrics (accuracy, balanced accuracy, mean a.k.a. statistical parity difference, disparate impact, equal opportunity difference, theil index, gamma disparity, average odds difference, mean absolute error, MDSS bias score, false positive rate, false negative rate, false discovery rate, error rate, mean absolute error). In addition, FairML also supports loading data from external CSV files. All of these allows users to express their bias mitigation strategies in different combinations of datasets, classifiers, de-biasing algorithms, and bias metrics.
 
+Regarding correctness, the values that the generated code produced were dominantly equal to the measurement values in the examples. Some of them were different with tolerance less than $\pm$ 0.1 difference. From all $N$ measurement values in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}, equal values comprise $N1$ values, while the tolerated values cover only $N2$ values.  
 
 %\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 %\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -603,7 +604,7 @@ Based on our evaluation, FairML was able to reproduce all the scenarios in all t
 		Adult, German, Compas &
 		Logistic regression &
 		Optimized preprocessing &
-		Balanced accuracy, Disparate impact Average odds, Statistical parity &
+		Balanced accuracy, Disparate impact, Average odds, Statistical parity &
 		9 \\
 		E11 &
 		Demo Optim Preproc Adult &
@@ -705,7 +706,9 @@ Based on our evaluation, FairML was able to reproduce all the scenarios in all t
 \subsection{Productivity}
 \label{sec:productivity}
 
+Table \ref{tab:loc} shows a comparison on the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that \textsf{Model LoC}/\textsf{Original LoC} are equal or less than 1, indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases as can been seen at the examples \textsf{E15} and \textsf{E16}, where LoC goes up from 30 to 356, that the efficiency is also increased -- with users only need to write from 83\% to 25\% of the LoC in their respective original examples.
 
+We do expect that FairML generates more LoC than the original examples as they contain features that are no included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) the code for displaying summary tables and charts. We do admit that there are also generated lines of code that are not always necessary for every scenario but always exist in the code -- this also increases the number of generated LoC.For example,   
 
 \begin{table*}[]
 	\caption{Lines of code of the original examples (Ori LoC), FairML models (Model LoC), and generated code (Gen LoC).}
@@ -747,6 +750,8 @@ Based on our evaluation, FairML was able to reproduce all the scenarios in all t
 
 \subsection{Execution Time}
 \label{sec:execution_time}
+
+Table \ref{tab:time} shows the duration taken by FairML in producing the generated code and the comparison between the execution times of the original examples and generated code (in seconds). FairML is able to produce all the generated versions of the examples in less that 0.2 seconds, and reach the rate 2,798 lines/second based on the example E16 (554/0.198).
 
 \begin{table*}[]
 	\caption{The generation time of FairML and execution time of the original examples and generated code (seconds).}

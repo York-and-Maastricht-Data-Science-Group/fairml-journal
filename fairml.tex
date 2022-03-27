@@ -42,7 +42,7 @@
 \usepackage{color, colortbl}
 \usepackage{ragged2e}
 \usepackage{array}
-
+\usepackage{amsmath}
 %%
 %% \BibTeX command to typeset BibTeX logo in the docs
 \AtBeginDocument{%
@@ -206,39 +206,33 @@ Models produced by machine learning are not guaranteed free from bias, particula
 %% Please copy and paste the code instead of the example below.
 %%
 \begin{CCSXML}
-<ccs2012>
- <concept>
-  <concept_id>10010520.10010553.10010562</concept_id>
-  <concept_desc>Computer systems organization~Embedded systems</concept_desc>
-  <concept_significance>500</concept_significance>
- </concept>
- <concept>
-  <concept_id>10010520.10010575.10010755</concept_id>
-  <concept_desc>Computer systems organization~Redundancy</concept_desc>
-  <concept_significance>300</concept_significance>
- </concept>
- <concept>
-  <concept_id>10010520.10010553.10010554</concept_id>
-  <concept_desc>Computer systems organization~Robotics</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
- <concept>
-  <concept_id>10003033.10003083.10003095</concept_id>
-  <concept_desc>Networks~Network reliability</concept_desc>
-  <concept_significance>100</concept_significance>
- </concept>
-</ccs2012>
+	<ccs2012>
+	<concept>
+	<concept_id>10011007.10011006.10011041.10011047</concept_id>
+	<concept_desc>Software and its engineering~Source code generation</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10003752.10010070.10010071</concept_id>
+	<concept_desc>Theory of computation~Machine learning theory</concept_desc>
+	<concept_significance>300</concept_significance>
+	</concept>
+	<concept>
+	<concept_id>10010405.10010455</concept_id>
+	<concept_desc>Applied computing~Law, social and behavioral sciences</concept_desc>
+	<concept_significance>500</concept_significance>
+	</concept>
+	</ccs2012>
 \end{CCSXML}
 
-\ccsdesc[500]{Computer systems organization~Embedded systems}
-\ccsdesc[300]{Computer systems organization~Redundancy}
-\ccsdesc{Computer systems organization~Robotics}
-\ccsdesc[100]{Networks~Network reliability}
+\ccsdesc[500]{Software and its engineering~Source code generation}
+\ccsdesc[300]{Theory of computation~Machine learning theory}
+\ccsdesc[500]{Applied computing~Law, social and behavioral sciences}
 
 %%
 %% Keywords. The author(s) should pick words that accurately describe
 %% the work being presented. Separate the keywords with commas.
-\keywords{datasets, neural networks, gaze detection, text tagging}
+\keywords{Model-Driven Engineering, Generative Programming, Bias Mitigation, Bias Metrics, Machine Learning}
 
 %% A "teaser" image appears between the author and affiliation
 %% information and the body of the document, and typically spans the
@@ -276,10 +270,11 @@ FairML is a tool that implements the MDSE approach to model and automate bias me
 	\item It automatically generates Python and Jupyter Notebook files which users can execute to run measure and mitigate biases on given datasets. All generated files are modifiable and extensible for fine-tuning and further development.
 \end{enumerate}
 
-
+This paper is structured as follow. First, we discuss fairness in machine Learning in Section \ref{sec:bias_in_machine_learning}. The section covers the definitions of some related terms, factual examples, bias metrics, and bias mitigation. In Section \ref{sec:model_based_bias_mitigation}, we presents an overview of model-driven software development as well as our approach in implementing the techniques from the field to automate bias mitigation. Section \ref{sec:example} presents how users use an existing toolkit in expressing a solution to mitigate bias in classification. We also demonstrate how FairML expresses the solution in more readable, shorter lines and is able to automatically produce generated code with the same correctness compared to the manually crafted ones. In section \ref{sec:evaluation}, we evaluate FairML on expressiveness, correctness, generation time, and execution time and use existing code of a bias mitigation toolkit as the benchmark. Section \ref{sec:result_and_discussion} presents and discusses the result of the evaluation. We also reflect on some lessons we learned during the research and development of FairML in Section \ref{sec:lessons_learned}. Finally, Section \ref{sec:conclusions_and_future_work} presents the conclusions and future work of this research.
 
 \section{Bias in Machine Learning}
 \label{sec:bias_in_machine_learning}
+In this section, we briefly discuss fairness in machine learning which covers the definitions of some related terms, factual examples, bias metrics, and bias mitigation.
 
 \subsection{Definitions and Examples}
 \label{sec:definitions_and_examples}
@@ -290,91 +285,45 @@ The absence of fairness can be caused by bias which is a systematic error or dis
 The unfairness happens when biases put privileged groups at the advantaged position against unprivileged groups \cite{bellamy2018ai}. 
 Bias can also be caused by negative discrimination if the distinction made is due to intentional or unintentional stereotyping and prejudice based on sensitive attributes (race, age, sex, etc.) \cite{mehrabi2021survey,chen2019fairness}. 
 
-For examples, in 2006, it has been found that COMPAS, the algorithm used for recidivism prediction produces much higher false positive rate for black people than white people \cite{angwin2016machine}. Another example is XING, a job platform similar to LinkedIn, was found to rank less qualified male candidates higher than more qualified female candidates \cite{lahoti2019ifair}. Moreoever, publicly available commercial face recognition online services provided by Microsoft, Face++, and IBM respectively are found to suffer from achieving much lower accuracy on females with darker skin color \cite{buolamwini2018gender}. There are other examples of biases in machines learning, but these three examples are enough to show that, in the real world context, machine learning is not always fair, and the unfairness can bring harm to people. 
+For examples, in 2006, it has been found that COMPAS, the algorithm used for recidivism prediction produces much higher false positive rate for black people than white people \cite{angwin2016machine}. Another example is XING, a job platform similar to LinkedIn, was found to rank less qualified male candidates higher than more qualified female candidates \cite{lahoti2019ifair}. Moreoever, publicly available commercial face recognition online services provided by Microsoft, Face++, and IBM respectively are found to suffer from achieving much lower accuracy on females with darker skin color \cite{buolamwini2018gender}. There are other examples of biases in machines learning, but these three examples are enough to show that, in the real world context, machine learning is not always fair, and the unfairness can bring disadvantages to certain groups. 
 
 \subsection{Bias Metrics}
 \label{sec:bias_metrics}
+Some metrics have been developed to detect and measure biases in machine learning. This section presents some of the metrics mentioned in this paper to give an overview how bias metrics are calculated and used. The first metric is Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai}. The metric computed as the difference of probabilities of being labelled favourable between the privileged and unprivileged groups. The ideal value of the metric is 1.
+\begin{equation} \label{eq:1}
+	SPD = Pr(\hat{Y} = 1 | D = \text{unprivileged})
+	- Pr(\hat{Y} = 1 | D = \text{privileged})
+\end{equation}
+The ideal value of the metric is 0. A negative value implies that the labelling favours the privileged group while a positive value implies the opposite.
 
+Another metric is Disparate Impact \cite{feldman2015disparate,bellamy2018ai} which is computed as the ratio of probabilities of being labelled favourable between the unprivileged and privileged groups.
+\begin{equation}
+	DI = \frac{Pr(\hat{Y} = 1 | D = \text{unprivileged})}
+	{Pr(\hat{Y} = 1 | D = \text{privileged})}
+\end{equation}
+The ideal value of this metric is 1.0. A value $<$ 1 indicates that the labelling advantages the privileged group and a value $>$ 1 disadvantage the unprivileged group.
 
+Equal Opportunity Difference \cite{bellamy2018ai} is a metric that calculates bias as the difference of true positive rates between the unprivileged and the privileged groups. 
+\begin{equation}
+	EOD = TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}	
+\end{equation}
+The true positive rate is the ratio of true positives to the total number of all positive outcomes ($TPR=TP/P$) for a given group. The ideal value is 0, and a negative value indicates higher preference to the privileged group while a positive one is the opposite.
 
-Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai} is a metric computed as the difference of the rate of favourable outcomes received by the unprivileged group to the privileged group. The ideal value of this metric is 0. Fairness for this metric is between -0.1 and 0.1.
+Average Odds Difference \cite{bellamy2018ai} is a metric that computes bias as the average difference of false positive rate ($FPR = FP/N$, false positives / all negatives) and true positive rate ($TPR = TP/P$, true positives / positives) between unprivileged and privileged groups.
+\begin{equation}
+\begin{aligned}
+	AOD = \tfrac{1}{2}* ((FPR_{D = \text{unprivileged}} - FPR_{D = \text{privileged}}) +\\
+	(TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}))
+\end{aligned}
+\end{equation}
+The ideal value of the metric is 0. A negative value indicates the privileged group is more favourable than the unprivileged group while a positive value indicates the opposite. 
 
-Equal Opportunity Difference \cite{bellamy2018ai} is a metric computed as the difference of true positive rates between the unprivileged and the privileged groups. 
-The true positive rate is the ratio of true positives to the total number of actual positives for a given group. The ideal value is 0. A value of $<$ 0 implies higher benefit for the privileged group and a value $>$ 0 implies higher benefit for the unprivileged group. Fairness for this metric is between -0.1 and 0.1.
-
-Average Odds Difference \cite{bellamy2018ai} is a metric computed as average difference of false positive rate (false positives / negatives) and true positive rate (true positives / positives) between unprivileged and privileged groups.
-The ideal value of this metric is 0. A value of $<$ 0 implies higher benefit for the privileged group and a value $>$ 0 implies higher benefit for the unprivileged group.
-Fairness for this metric is between -0.1 and 0.1
-
-Disparate Impact \cite{feldman2015disparate,bellamy2018ai} is a metric computed as the ratio of rate of favourable outcome for the unprivileged group to that of the privileged group.
-The ideal value of this metric is 1.0 A value $<$ 1 implies higher benefit for the privileged group and a value $>$1 implies a higher benefit for the unprivileged group.
-Fairness for this metric is between 0.8 and 1.25.
-
-5. Theil Index \cite{conceicao2000theyoung,bellamy2018ai}
-Computed as the generalized entropy of benefit for all individuals in the dataset, with alpha = 1. It measures the inequality in benefit allocation for individuals.
-A value of 0 implies perfect fairness. Fairness is indicated by lower scores, higher scores are problematic.
-
-
-Fairness Measures (Zehlike et al., 2017), for example,
-provides several fairness metrics, including difference of
-means, disparate impact, and odds ratio. A set of datasets
-is also provided, though some datasets are not in the pub-
-lic domain and need explicit permission from the owners
-to access/use the data. Similarly, FairML (Adebayo, 2016)
-provides an auditing tool for predictive models by quantify-
-ing the relative effects of various inputs on a models predic-
-tions. This, in turn, can be used to assess the models fair-
-ness. FairTest (Tram`
-
-er et al., 2017), on the other hand, ap-
-proaches the task of detecting biases in a dataset by check-
-ing for associations between predicted labels and protected
-attributes. The methodology also provides a way to iden-
-tify regions of the input space where an algorithm might
-incur unusually high errors. This toolkit also includes a
-rich catalog of datasets. Aequitas (Stevens et al., 2018) is
-another auditing toolkit for data scientists as well as pol-
-icy makers; it has a Python library as well as an associated
-web site where data can be uploaded for bias analysis. It
-offers several fairness metrics, including demographic or
-statistical parity and disparate impact, along with a ”fair-
-ness tree” to help users identify the correct metric to use for
-their particular situation. Aequitas’s license does not allow
-
-
-AI Fairness 360
-
-commercial use. Finally, Themis (Galhotra et al., 2017) is
-an open source bias toolbox that automatically generates
-test suites to measure discrimination in decisions made by
-a predictive system.
-
+Theil Index is the generalized entropy index  with alpha equals to 1 \cite{conceicao2000theyoung,bellamy2018ai}. It can be used as a unified metric to measures the inequality in benefit allocation for groups and individuals \cite{speicher2018unified}. Perfect fairness is indicated by a value of 0. Lower scores reflect strong fairness while the higher ones show the opposite.
 
 
 \subsection{Bias Mitigation}
 \label{sec:bias_mitigation}
-
-A handful of toolkits address both bias detection as well
-as bias mitigation. Themis-ML (Bantilan, 2018) is one
-such repository that provides a few fairness metrics, such
-as mean difference, as well as some bias mitigation algo-
-rithms, such as relabeling (Kamiran \& Calders, 2012), ad-
-ditive counterfactually fair estimator (Kusner et al., 2017),
-and reject option classiﬁcation (Kamiran et al., 2012). The
-repository contains a subset of the methods described in the
-paper. Fairness Comparison (Friedler et al., 2018) is one of
-the more extensive libraries. It includes several bias detec-
-tion metrics as well as bias mitigation methods, including
-disparate impact remover (Feldman et al., 2015), prejudice
-remover (Kamishima et al., 2012), and two-Naive Bayes
-(Calders \& Verwer, 2010). Written primarily as a test-bed
-to allow different bias metrics and algorithms to be com-
-pared in a consistent way, it also allows the addition of ad-
-ditional algorithms and datasets.
-
-\section{Running Example}
-\label{sec:running_example}
-
+Adversarial Debiasing, Callibrated Equalising Odds, Disparate Impact Remover, Exponentiated Gradient Reduction, Gerryfair, Learning Fair Representation, Reweighing, Meta Fair Classification, Optimized Preprocessing, Reject Option Classification, Prejudice Remover, Grid Search Reduction, Reweighing Meta
 
 \section{Model-based Bias Mitigation}
 \label{sec:model_based_bias_mitigation}
@@ -451,36 +400,9 @@ Finally, after mitigated in Action A6, biases are measured again in Action A9. T
 \subsection{Design}
 \label{sec:design}
 
+\section{Example}
+\label{sec:example}
 
-
-\section{Evaluation}
-\label{sec:evaluation}
-In this research, we also evaluated the expressiveness, correctness, productivity, and execution time of FairML. In the expressiveness evaluation, we aimed to answer this question, 
-``\textit{Can FairML express the use cases of bias mitigation in the real-world?}''. For that, we used the examples provided IBM Fairness AI 360 as the baseline to justify the expressiveness of FairML. 
-the toolkit comes with a number of examples (Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}) that demonstrate 
-the usecases of the toolkit in the real-world context. 
-Among 22 examples that comes in version 4.0, we only used 21 of them, 
-since the one that we excluded only explains the use of a class dedicated to yield bias metric explanation in JSON format. We also count the numbers of bias metrics, de-biasing algorithms, classifiers, datasets, and measurement values are there in each example to reveal its complexity. 
-
-We compared the bias metric values measured (measurement values) in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal values or similar values, up to 10\% tolerance, when randomness is required.  
-
-In the productivity evaluation, 
-we compared the ratio of the written vs. generated code of FairML vs.
-code in the examples. 
-While this metric does not always guaranteed productivity in the end due many factors, 
-the number of lines written by users is significantly reduced. In the measurement, \textit{markdown}, whitespace, and commented lines were not counted.
-
-We also measured the execution time of FairML.First, we measured the \textit{generation time} -- the time that FairML takes to completely generate the target code. Second, we compared the time taken by the generated target code against the example code to to complete their operations (\textit{generated execution time} vs. \textit{original execution time}). The evaluation was performed on a machine with Windows 10 64-bit operating system, 11th Gen Intel(R) Core(TM) i9-11900H @ 2.50GHz 8-core processors, 32.0 GB RAM DDR4, OpenJDK Runtime Environment 18.9 (build 11.0.14.1+1), and Python 3.9.7.
-
-\section{Results and Discussion}
-\label{sec:result_and_discussion}
-In this section, we present and discuss the results of our FairML evaluation.
-
-\subsection{Expressiveness and Correctness}
-\label{sec:expressiveness_and_correctness}
-Based on our evaluation, FairML was able to reproduce all the scenarios in all the 21 examples in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}. In total, all the scenarios covered 8 unique datasets (Adult, German, Compas, Lawschool GPA, MEPSDataset19, MEPSDataset20, MEPSDataset21), 6 classifiers (Logistic Regression, Linear Regression, Linear SVR, Decision Tree, Kernel Ridge, Random Forest), 13 bias mitigation algorithms (Adversarial Debiasing, Callibrated Equalising Odds, Disparate Impact Remover, Exponentiated Gradient Reduction, Gerryfair, Learning Fair Representation, Reweighing, Meta Fair Classification, Optimized Preprocessing, Reject Option Classification, Prejudice Remover, Grid Search Reduction, Reweighing Meta), and 15 bias metrics (accuracy, balanced accuracy, mean a.k.a. statistical parity difference, disparate impact, equal opportunity difference, theil index, gamma disparity, average odds difference, mean absolute error, MDSS bias score, false positive rate, false negative rate, false discovery rate, error rate, mean absolute error). In addition, FairML also supports loading data from external CSV files. All of these allows users to express their bias mitigation strategies in different combinations of datasets, classifiers, de-biasing algorithms, and bias metrics.
-
-Regarding correctness, the values that the generated code produced were dominantly equal to the measurement values in the examples. Some of them were different with tolerance less than $\pm$ 0.1 difference. From all $N$ measurement values in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}, equal values comprise $N1$ values, while the tolerated values cover only $N2$ values.  
 
 %\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
 %\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
@@ -492,7 +414,7 @@ Regarding correctness, the values that the generated code produced were dominant
 
 
 \begin{table*}[]
-	\caption{Part I -- IBM AI Fairness 360 examples and the numbers of unique datasets, classifiers, de-biasing algorithms, bias metrics, and measurement values in each example.}
+	\caption{Part 1 of 2 -- IBM AI Fairness 360 examples and the numbers of unique datasets, classifiers, de-biasing algorithms, bias metrics, and measurement values in each example.}
 	\label{tab:expressiveness1}
 	\begin{tabular}{ p{1em} L{10em} R{4em} R{8em} R{9em} R{12em} R{2.5em} }
 		\hline
@@ -585,7 +507,7 @@ Regarding correctness, the values that the generated code produced were dominant
 \end{table*}
 
 \begin{table*}[]
-	\caption{Part II -- IBM AI Fairness 360 examples and the numbers of unique datasets, classifiers, de-biasing algorithms, bias metrics, and measurement values in each example.}
+	\caption{Part 2 of 2 -- IBM AI Fairness 360 examples and the numbers of unique datasets, classifiers, de-biasing algorithms, bias metrics, and measurement values in each example.}
 	\label{tab:expressiveness2}
 	\begin{tabular}{ p{1em} L{10em} R{4em} R{8em} R{9em} R{12em} R{2.5em} }
 		\hline
@@ -669,16 +591,6 @@ Regarding correctness, the values that the generated code produced were dominant
 	\end{tabular}
 \end{table*}
 
-
-\subsection{Productivity}
-\label{sec:productivity}
-
-Table \ref{tab:loc} shows a comparison on the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that \textsf{Model LoC}/\textsf{Original LoC} are equal or less than 1, indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases as can been seen at the examples \textsf{E15} and \textsf{E16}, where LoC goes up from 30 to 356, that the efficiency is also increased -- with users only need to write from 83\% to 25\% of the LoC in their respective original examples.
-
-We do expect that FairML generates more LoC than the original examples as they contain features that are no included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) the code for displaying summary tables and charts. 
-
-%We do admit that there are also generated lines of code that are not always necessary for every scenario but always exist in the code -- this also increases the number of generated LoC.For example,   
-
 \begin{table*}[]
 	\caption{Lines of code of the original examples (Ori LoC), FairML models (Model LoC), and generated code (Gen LoC).}
 	\label{tab:loc}
@@ -716,23 +628,6 @@ We do expect that FairML generates more LoC than the original examples as they c
 	\end{tabular}
 \end{table*}
 
-
-\subsection{Execution Time}
-\label{sec:execution_time}
-
-Table \ref{tab:time} shows the duration -- generation time -- taken by FairML to produce generated code, 
-and the performance of the generated code on execution time against the original examples (in seconds). 
-On the generation time, 
-FairML is able to generate every generated-code version of the original examples in less that 0.2 seconds, 
-and it can achieve the rate 2,798 lines/second based on the example E16 
-(554 lines/0.198 seconds, Tables \ref{tab:loc} and \ref{tab:time}). 
-
-In general, the execution time of the generated code takes more time than the original examples. 
-We do anticipate this as the generated-code versions have more features, having more lines of code,
-as stated in Section \ref{sec:productivity}. 
-
- 
-
 \begin{table*}[]
 	\caption{The generation time of FairML and execution time of the original examples and generated code (seconds).}
 	\label{tab:time}
@@ -767,14 +662,121 @@ as stated in Section \ref{sec:productivity}.
 		E21 & Demo New Features                                 &       &        &        &      \\ \hline
 	\end{tabular}
 \end{table*}
+
+\section{Evaluation}
+\label{sec:evaluation}
+In this research, we also evaluated the expressiveness, correctness, productivity, and execution time of FairML. In the expressiveness evaluation, we aimed to answer this question, 
+``\textit{Can FairML express the use cases of bias mitigation in the real-world?}''. For that, we used the examples provided IBM Fairness AI 360 as the baseline to justify the expressiveness of FairML. 
+the toolkit comes with a number of examples (Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}) that demonstrate 
+the usecases of the toolkit in the real-world context. 
+Among 22 examples that comes in version 4.0, we only used 21 of them, 
+since the one that we excluded only explains the use of a class dedicated to yield bias metric explanation in JSON format. We also count the numbers of bias metrics, de-biasing algorithms, classifiers, datasets, and measurement values are there in each example to reveal its complexity. 
+
+We compared the bias metric values measured (measurement values) in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal values or similar values, up to 10\% tolerance, when randomness is required.  
+
+In the productivity evaluation, 
+we compared the ratio of the written vs. generated code of FairML vs.
+code in the examples. 
+While this metric does not always guaranteed productivity in the end due many factors, 
+the number of lines written by users is significantly reduced. In the measurement, \textit{markdown}, whitespace, and commented lines were not counted.
+
+We also measured the execution time of FairML.First, we measured the \textit{generation time} -- the time that FairML takes to completely generate the target code. Second, we compared the time taken by the generated target code against the example code to to complete their operations (\textit{generated execution time} vs. \textit{original execution time}). The evaluation was performed on a machine with Windows 10 64-bit operating system, 11th Gen Intel(R) Core(TM) i9-11900H @ 2.50GHz 8-core processors, 32.0 GB RAM DDR4, OpenJDK Runtime Environment 18.9 (build 11.0.14.1+1), and Python 3.9.7.
+
+\section{Results and Discussion}
+\label{sec:result_and_discussion}
+In this section, we present and discuss the results of our FairML evaluation.
+
+\subsection{Expressiveness and Correctness}
+\label{sec:expressiveness_and_correctness}
+Based on our evaluation, FairML was able to reproduce all the scenarios in all the 21 examples in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}. In total, all the scenarios covered 8 unique datasets (Adult, German, Compas, Lawschool GPA, MEPSDataset19, MEPSDataset20, MEPSDataset21), 6 classifiers (Logistic Regression, Linear Regression, Linear SVR, Decision Tree, Kernel Ridge, Random Forest), 13 bias mitigation algorithms (Adversarial Debiasing, Callibrated Equalising Odds, Disparate Impact Remover, Exponentiated Gradient Reduction, Gerryfair, Learning Fair Representation, Reweighing, Meta Fair Classification, Optimized Preprocessing, Reject Option Classification, Prejudice Remover, Grid Search Reduction, Reweighing Meta), and 15 bias metrics (Accuracy, Balanced Accuracy, Mean Difference a.k.a. Statistical Parity Difference, Disparate Impact, Equal Opportunity Difference, Theil Index, Gamma Disparity, Average Odds Difference, Mean Absolute Error, MDSS Bias Score, False Positive Rate, False Negative Rate, False Discovery Rate, Rrror Rate, Mean Absolute Error). In addition, FairML also supports loading data from external CSV files. All of these allows users to express their bias mitigation strategies in different combinations of datasets, classifiers, de-biasing algorithms, and bias metrics.
+
+Regarding correctness, the values that the generated code produced were dominantly equal to the measurement values in the examples. Some of them were different with tolerance less than $\pm$ 0.1 difference. From all $N$ measurement values in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}, equal values comprise $N1$ values, while the tolerated values cover only $N2$ values.  
+
+
+\subsection{Productivity}
+\label{sec:productivity}
+
+Table \ref{tab:loc} shows a comparison on the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that \textsf{Model LoC}/\textsf{Original LoC} are equal or less than 1, indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases as can been seen at the examples \textsf{E15} and \textsf{E16}, where LoC goes up from 30 to 356, that the efficiency is also increased -- with users only need to write from 83\% to 25\% of the LoC in their respective original examples.
+
+We do expect that FairML generates more LoC than the original examples as they contain features that are no included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) the code for displaying summary tables and charts. 
+
+%We do admit that there are also generated lines of code that are not always necessary for every scenario but always exist in the code -- this also increases the number of generated LoC.For example,   
+
+
+
+\subsection{Execution Time}
+\label{sec:execution_time}
+
+Table \ref{tab:time} shows the duration -- generation time -- taken by FairML to produce generated code, 
+and the performance of the generated code on execution time against the original examples (in seconds). 
+On the generation time, 
+FairML is able to generate every generated-code version of the original examples in less that 0.2 seconds, 
+and it can achieve the rate 2,798 lines/second based on the example E16 
+(554 lines/0.198 seconds, Tables \ref{tab:loc} and \ref{tab:time}). 
+
+In general, the execution time of the generated code takes more time than the original examples. 
+We do anticipate this as the generated-code versions have more features, having more lines of code,
+as stated in Section \ref{sec:productivity}. 
+
+ 
+
+
 '
 \section{Lessons Learned}
 \label{sec:lessons_learned}
 
 
 
-%\section{Related Work}
-%\label{sec:related_work}
+\section{Related Work}
+\label{sec:related_work}
+Some toolkits have been developed to measure fairness and mitigate biases. 
+Fairness Measures \cite{zehlike2017fairness}, for example, provides several fairness metrics, including difference of
+means, disparate impact, and odds ratio. 
+A set of datasets is also provided, though some datasets are not in the pub-
+lic domain and need explicit permission from the owners
+to access/use the data. 
+Similarly, FairML (Adebayo, 2016) provides an auditing tool for predictive models by quantifying the relative effects of various inputs on a models predic-
+tions. 
+This, in turn, can be used to assess the models fair-
+ness. FairTest (Tramer et al., 2017), on the other hand, approaches the task of detecting biases in a dataset by check-
+ing for associations between predicted labels and protected
+attributes. The methodology also provides a way to iden-
+tify regions of the input space where an algorithm might
+incur unusually high errors. This toolkit also includes a
+rich catalog of datasets. Aequitas (Stevens et al., 2018) is
+another auditing toolkit for data scientists as well as pol-
+icy makers; it has a Python library as well as an associated
+web site where data can be uploaded for bias analysis. It
+offers several fairness metrics, including demographic or
+statistical parity and disparate impact, along with a ”fair-
+ness tree” to help users identify the correct metric to use for
+their particular situation. Aequitas’s license does not allow
+
+
+AI Fairness 360
+
+commercial use. Finally, Themis (Galhotra et al., 2017) is
+an open source bias toolbox that automatically generates
+test suites to measure discrimination in decisions made by
+a predictive system.
+
+A handful of toolkits address both bias detection as well
+as bias mitigation. Themis-ML (Bantilan, 2018) is one
+such repository that provides a few fairness metrics, such
+as mean difference, as well as some bias mitigation algo-
+rithms, such as relabeling (Kamiran \& Calders, 2012), ad-
+ditive counterfactually fair estimator (Kusner et al., 2017),
+and reject option classiﬁcation (Kamiran et al., 2012). The
+repository contains a subset of the methods described in the
+paper. Fairness Comparison (Friedler et al., 2018) is one of
+the more extensive libraries. It includes several bias detec-
+tion metrics as well as bias mitigation methods, including
+disparate impact remover (Feldman et al., 2015), prejudice
+remover (Kamishima et al., 2012), and two-Naive Bayes
+(Calders \& Verwer, 2010). Written primarily as a test-bed
+to allow different bias metrics and algorithms to be com-
+pared in a consistent way, it also allows the addition of ad-
+ditional algorithms and datasets.
 
 
 \section{Conclusions and Future Work}
@@ -790,16 +792,8 @@ As the knock-on effect, the removal of unnecessary code can optimise the executi
 %% appendix sections are then done as normal sections
 \appendix
 
-\section{List of Examples}
-\label{sec:list_of_examples}
-
-
-
-
 \section{List of Constructs}
 \label{sec:list_of_constructs}
-
-
 
 \begin{enumerate}
 	\item Dataset.
@@ -822,7 +816,7 @@ As the knock-on effect, the removal of unnecessary code can optimise the executi
 	\item Parameters.
 \end{enumerate}
 
-  \bibliographystyle{ACM-Reference-Format} 
+\bibliographystyle{ACM-Reference-Format} 
 \bibliography{references}
 
 \end{document}

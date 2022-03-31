@@ -467,13 +467,28 @@ Figure \ref{fig:metamodel} shows a simplified metamodel of FairML. The \texttt{F
 
 The \texttt{Dataset} class defines the datasets. In the class, we specify a dataset's name, predicted attribute, protected attributes, the split's ratio between train, test, and validation, as well as the path of its CSV file. We can also a dataset from the built-in IBM AI Fairness 360's datasets by specifying it using the \texttt{datasetModule} attribute.
 
-The \texttt{BiasMitigation} class specifies the bias mitigations that the FairML project executes. The class contains three other significant classes: \texttt{Training Method}, \texttt{MitigationMethod}, and \texttt{BiasMetric}. All of them are derived from the \texttt{\textit{Operation}} abstract class since they are executable and can have parameters and return certain results. The \texttt{TrainingMethod} class is used to define the algorithms for classification and prediction, while the \texttt{MitigationMethod} class specifies algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure biases. 
+The \texttt{BiasMitigation} class specifies the bias mitigations that the FairML project executes. The class contains three other significant classes: \texttt{TrainingMethod}, \texttt{MitigationMethod}, and \texttt{BiasMetric}. All of them are derived from the \texttt{\textit{Operation}} abstract class since they are executable and can have parameters and return certain results. The \texttt{TrainingMethod} class is used to define the algorithms for classification and prediction, while the \texttt{MitigationMethod} class specifies algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure biases. 
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figures/metamodel}
 	\caption{The Metamodel of FairML.}
 	\label{fig:metamodel}
 \end{figure}
+
+\subsection{Generation}
+\label{sec:generation}
+
+Figure \ref{fig:transformation} depicts the the transformation applied by FairML to transform a bias mitigation model into Python and Jupyter Notebook files. Users only need to define their bias mitigation models in Flexmi\footnote{\url{https://www.eclipse.org/epsilon/doc/flexmi}} \cite{dimitris2016flexmi}. The model then is transformed by Epsilon Generation Language (EGL) \cite{rose2008egl} engine into Python code. The transformation itself follows the FairML's EGX/EGL\footnote{\url{https://www.eclipse.org/epsilon/doc/egl/}} rules and conforms to the defined FairML's metamodel in Ecore \cite{steinberg2009emf}.  
+
+The generated Python files are then transformed into Jupyter notebook files using P2J\footnote{\url{https://pypi.org/project/p2j/}} engine.
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{figures/transformation}
+	\caption{Model-to-text transformation in fairML.}
+	\label{fig:transformation}
+\end{figure}
+
+
 
 \subsection{FairML Example}
 \label{sec:fairml_example}
@@ -525,26 +540,27 @@ from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_function
   - name: average_odds_difference
 \end{lstlisting}
 
-\subsection{Generation}
-\label{sec:generation}
-I will put the the model-to-text transformation/generation here.
-
-\begin{figure}
-	\includegraphics[width=\linewidth]{figures/transformation}
-	\caption{Model-to-text transformation in fairML.}
-	\label{fig:transformation}
-\end{figure}
 
 \subsection{Wizard}
 \label{sec:wizard}
+There are many available debiasing algorithms and bias metrics that users can select to mitigates biases in machine learning. Some of them are better than others in certain context. FairML provides a wizard feature assists users to select the most appropriate debiasing algorithms and bias metrics based on their answers to the wizard's questions. The wizard follows the guidances suggested by \cite{mahoney2020ai}, IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}}, and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}}.
 
-I will put the automated selection of bias metrics and mitigation algorithms here.
+\begin{figure*}
+	\includegraphics[width=\linewidth]{figures/wizard-metric}
+	\caption{The decision three to automatically select the most appropriate bias metrics based on the users' answers to the wizard's questions.}
+	\label{fig:wizard-metric}
+\end{figure*}
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{figures/wizard-debiasing}
+	\caption{The decision three to automatically select the most appropriate debiasing algorithms based on the answers to the wizard's questions.}
+	\label{fig:wizard-debiasing}
+\end{figure*}
+
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}
 \newcolumntype{R}[1]{>{\raggedleft\arraybackslash}p{#1}}
-
-
 \begin{table*}[]
 	\caption{Part 1 of 2 -- IBM AI Fairness 360 examples and the numbers of unique datasets, classifiers, de-biasing algorithms, bias metrics, and measurement values in each example.}
 	\label{tab:expressiveness1}
@@ -850,10 +866,11 @@ In general, the execution time of the generated code takes more time than the or
 We do anticipate this as the generated-code versions have more features, having more lines of code,
 as stated in Section \ref{sec:productivity}. 
 
- 
+\subsection{Threats to Validity}
+\label{sec:threats_to_validity}
 
 
-'
+
 \section{Lessons Learned}
 \label{sec:lessons_learned}
 
@@ -866,6 +883,10 @@ as stated in Section \ref{sec:productivity}.
 
 \section{Related Work}
 \label{sec:related_work}
+
+The closest existing work to FairML is Arbiter \cite{zucker2020arbiter}, a domain specific-language designed for ethical machine learning. It is an SQL-like declarative language to define how to train machine learning models with four components to describe its ethical practices: transparency, fairness, accountability, and reproducibility. The implementation is limited to a particular metric and classifier\footnote{\url{https://github.com/julian-zucker/arbiter}} and has not been thoroughly evaluated.
+
+
 Some toolkits have been developed to measure fairness and mitigate biases. 
 Fairness Measures \cite{zehlike2017fairness}, for example, provides several fairness metrics, including difference of
 means, disparate impact, and odds ratio. 
@@ -924,6 +945,13 @@ In terms of correctness, the generated code produces the same bias metric values
 As the development of FairML is still in the early stage, 
 there is much room for improvement as future work. For examples, the number of lines of code generated by FairML can still be further reduced by merging repeatable lines into functions and removing unnecessary code determined by firstly performing static analysis. 
 As the knock-on effect, the removal of unnecessary code can optimise the execution time of the generated code. 
+
+
+\section{Acknowledgements}
+\label{sec:acknowledgements}
+This work has been funded through the York-Maastricht
+partnership’s Responsible Data Science by Design programme
+(\url{https://www.york.ac.uk/maastricht}).
 
 %% The Appendices part is started with the command \appendix;
 %% appendix sections are then done as normal sections

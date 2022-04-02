@@ -884,58 +884,19 @@ as stated in Section \ref{sec:productivity}.
 \section{Related Work}
 \label{sec:related_work}
 
-The closest existing work to FairML is Arbiter \cite{zucker2020arbiter}, a domain specific-language designed for ethical machine learning. It is an SQL-like declarative language to define how to train machine learning models with four components to describe its ethical practices: transparency, fairness, accountability, and reproducibility. The implementation is limited to a particular metric and classifier\footnote{\url{https://github.com/julian-zucker/arbiter}} and has not been thoroughly evaluated.
 
+Some toolkits have been developed to measure biases in machine learning. 
+Another FairML, a toolbox developed by \cite{adebayo2016fairml}, audits the fairness of a predictive model by calculating the relative effects of its different inputs on its predictions by leveraging four input ranking algorithms and model compression. 
+FairTest \cite{tramer2017fairtest} calculates the associations between sensitive attributes and predicted labels to check biases in a dataset. It also provides a methodology to identify the input space's regions where an algorithm might produce unusual high rates of errors.
+Themis \cite{galhotra2017themis}, a bias toolbox, allows automatic generation of tests to measure discrimination in the decisions of a predictive system.
+Fairness Measures \cite{zehlike2017fairness} supports the measurement of different bias metrics, such as disparate impact, average odds ratio, and mean difference. 
+Aequitas \cite{saleiro2019aequitas} is an auditing toolkit that measures fairness in different metrics. It also provides a decision tree to guide users in choosing the most appropriate metrics for a particular situation. 
 
-Some toolkits have been developed to measure fairness and mitigate biases. 
-Fairness Measures \cite{zehlike2017fairness}, for example, provides several fairness metrics, including difference of
-means, disparate impact, and odds ratio. 
-A set of datasets is also provided, though some datasets are not in the pub-
-lic domain and need explicit permission from the owners
-to access/use the data. 
-Similarly, FairML (Adebayo, 2016) provides an auditing tool for predictive models by quantifying the relative effects of various inputs on a models predic-
-tions. 
-This, in turn, can be used to assess the models fair-
-ness. FairTest (Tramer et al., 2017), on the other hand, approaches the task of detecting biases in a dataset by check-
-ing for associations between predicted labels and protected
-attributes. The methodology also provides a way to iden-
-tify regions of the input space where an algorithm might
-incur unusually high errors. This toolkit also includes a
-rich catalog of datasets. Aequitas (Stevens et al., 2018) is
-another auditing toolkit for data scientists as well as pol-
-icy makers; it has a Python library as well as an associated
-web site where data can be uploaded for bias analysis. It
-offers several fairness metrics, including demographic or
-statistical parity and disparate impact, along with a ”fair-
-ness tree” to help users identify the correct metric to use for
-their particular situation. Aequitas’s license does not allow
+Some other toolkits are also able to mitigate biases, not only limited to measuring fairness. They are ThemisML \cite{bantilan2018themis}, Fairness Comparison \cite{friedler2019fairness}, Aequitas\cite{saleiro2019aequitas}, Google What-If\cite{googlewhatif2020}, Scikit-fairnet/scikit-lego \cite{scikitfairness2022,scikitlego2022}, Fairlearn\cite{bird2020fairlearn}, and IBM AI Fairness 360 \cite{bellamy2018ai}.
 
+Rapidminer \cite{hofmann2016rapidminer}, Knime \cite{berthold2008knime}, and Orange \cite{demsar2013orange} are the platforms that use low-code, model-based approaches to allow users to visually program machine learning pipelines by assembling component-based procedures. They support data exploration, transformation, visualisation, and different algorithms for machine learning and data mining. Moreover, all of them are extensible, which means users can add new modules or scripts. However, as far as we are aware, there are no built-in modules for measuring and mitigating biases. 
 
-AI Fairness 360
-
-commercial use. Finally, Themis (Galhotra et al., 2017) is
-an open source bias toolbox that automatically generates
-test suites to measure discrimination in decisions made by
-a predictive system.
-
-A handful of toolkits address both bias detection as well
-as bias mitigation. Themis-ML (Bantilan, 2018) is one
-such repository that provides a few fairness metrics, such
-as mean difference, as well as some bias mitigation algo-
-rithms, such as relabeling (Kamiran \& Calders, 2012), ad-
-ditive counterfactually fair estimator (Kusner et al., 2017),
-and reject option classiﬁcation (Kamiran et al., 2012). The
-repository contains a subset of the methods described in the
-paper. Fairness Comparison (Friedler et al., 2018) is one of
-the more extensive libraries. It includes several bias detec-
-tion metrics as well as bias mitigation methods, including
-disparate impact remover (Feldman et al., 2015), prejudice
-remover (Kamishima et al., 2012), and two-Naive Bayes
-(Calders \& Verwer, 2010). Written primarily as a test-bed
-to allow different bias metrics and algorithms to be com-
-pared in a consistent way, it also allows the addition of ad-
-ditional algorithms and datasets.
-
+The closest existing work to FairML is Arbiter \cite{zucker2020arbiter}, a domain specific-language designed for ethical machine learning. It is an SQL-like declarative language to define how to train machine learning models with four components to describe its ethical practices: transparency, fairness, accountability, and reproducibility. Unfortunately, the implementation is limited only to a particular metric and classifier\footnote{\url{https://github.com/julian-zucker/arbiter}}.
 
 \section{Conclusions and Future Work}
 \label{sec:conclusions_and_future_work}

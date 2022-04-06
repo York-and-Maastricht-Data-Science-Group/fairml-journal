@@ -221,7 +221,7 @@
 %% The abstract is a short summary of the work to be presented in the
 %% article.
 \begin{abstract}
-Models produced by machine learning are not guaranteed free from bias, particularly when trained and tested with data produced in discriminatory environments. The bias can be unethically acceptable, especially when the data contains sensitive attributes, such as sex, race, age, etc. Some approaches have contributed to mitigating such bias by providing bias metrics and mitigation algorithms, and they are already supported by most fair machine learning toolkits. FairML brings a model-based approach to improve the fairness of machine learning by levelling up the abstraction and automatically generating the code and reports of bias measurement and mitigation. Our evaluation shows that FairML requires fewer lines of code to produce the similar measurement results to the ones measured by the baseline code.
+Models produced by machine learning are not guaranteed free from bias, particularly when trained and tested with data produced in discriminatory environments. The bias can be unethically acceptable, especially when the data contains sensitive attributes, such as sex, race, age, etc. Some approaches have contributed to mitigating such biases by providing bias metrics and mitigation algorithms. The challenge is users have to implement their code in general/statistical programming languages which can be demanding for users with little programming and fairness in machine learning experience. FairML provides a model-based approach to improve the productivity of bias measurement and mitigation by raising up their abstraction and automatically generating their implementation code. Our evaluation shows that FairML requires fewer lines of code to produce similar measurement values, with $pm$ 0.1 tolerance, to the ones produced by the baseline code.
 \end{abstract}
 
 %%
@@ -275,12 +275,13 @@ Models produced by machine learning are not guaranteed free from bias, particula
 
 \section{Introduction}
 \label{sec:introduction}
-The use of machine learning is pervasive nowadays, from personal daily activities, such as face recognition for authentication and voice processing when talking to smart assistants (e.g., Alexa, Siri), to performing sensitive, ethical tasks, such as predicting criminals and classifying profiles for loans. While machine learning does bring efficiencies, models produced by machine learning are not guaranteed free from bias, particularly when trained and tested with data produced in discriminatory environments. The bias can be unethically acceptable, particularly when it touches sensitive attributes, such as sex, race, age, etc., and cause unfairness. 
+The use of machine learning is pervasive nowadays, from personal daily activities, such as face recognition for authentication and voice processing when talking to smart assistants (e.g., Alexa, Siri), to performing sensitive, ethical tasks, such as predicting criminals and classifying profiles for loans. While machine learning does bring efficiency, models produced by machine learning are not guaranteed free from bias, particularly when trained and tested with data produced in discriminatory environments. The bias can be unethically acceptable, particularly when it touches sensitive attributes, such as sex, race, age, etc., and cause unfairness. 
 
 In 2016, an algorithm for predicting recidivism was found produced high false negative rate for white people and high false positive rate for black people \cite{angwin2016machine}. Some commercial face recognition services were also found having significant lower accuracy on darker-skin females \cite{buolamwini2018gender}. Moreover, A job platform was found to rank qualified female candidates far lower than qualified male candidates even though they have similar properties \cite{lahoti2019ifair}. These are some of many other instances that show biases in machine learning can promote unfairness. 
 
-Some approaches have contributed to the mitigation of such biases by providing metrics []  and algorithms [] to measure and mitigate biases. Some toolkits do exist to allow users to implement such metrics and algorithms (see Table \ref{tab:bias-mitigation-toolkits}).
-However, these toolkits come with different methodological approaches and capabilities which users need to understand so that they can decide which toolkits are best for certain scenarios~\cite{lee2021landscape}.  
+Some approaches have contributed to the mitigation of such biases by providing bias metrics and debiasing algorithms (more in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation}). 
+These metrics and algorithms have been implemented by different toolkits.
+However, they come with different methodological approaches and capabilities which demand users to understand them before they can decide which toolkits are best for specific scenarios~\cite{lee2021landscape}.  
 
 Data scientists usually work using their intuitions to narrow down the number of combinations of algorithms, parameters, and other factors in order to find the best models for given goals, datasets, and domains \cite{muller2016introduction}. After that, with lots of experimentation and trial and error \cite{byrne2017development}, they have to go through all the narrowed combinations and test the produced models to identify which models are the best. Moreover, regardless of the availability of machine learning libraries, data scientists have to craft the search process from scratch in general/statistical programming languages (e.g, Python, R).
 
@@ -308,11 +309,25 @@ The absence of fairness can be caused by bias which is a systematic error or dis
 The unfairness happens when biases put privileged groups at the advantaged position against unprivileged groups \cite{bellamy2018ai}. 
 Bias can also be caused by negative discrimination if the distinction made is due to intentional or unintentional stereotyping and prejudice based on sensitive attributes (race, age, sex, etc.) \cite{mehrabi2021survey,chen2019fairness}. 
 
-For examples, in 2006, it has been found that COMPAS, the algorithm used for recidivism prediction produces much higher false positive rate for black people than white people \cite{angwin2016machine}. Another example is XING, a job platform similar to LinkedIn, was found to rank less qualified male candidates higher than more qualified female candidates \cite{lahoti2019ifair}. Moreoever, publicly available commercial face recognition online services provided by Microsoft, Face++, and IBM respectively are found to suffer from achieving much lower accuracy on females with darker skin color \cite{buolamwini2018gender}. There are other examples of biases in machines learning, but these three examples are enough to show that, in the real world context, machine learning is not always fair, and the unfairness can bring disadvantages to certain groups. 
+For examples, in 2006, it has been found that COMPAS, the algorithm used for recidivism prediction produces much higher false positive rate for black people than white people \cite{angwin2016machine}. Another example is XING, a job platform similar to LinkedIn, was found to rank less qualified male candidates higher than more qualified female candidates \cite{lahoti2019ifair}. The paper states that fairness between female and male groups has been achieved, but group fairness did not necessarily indicate fairness for individuals. Moreover, publicly available commercial face recognition online services provided by Microsoft, Face++, and IBM respectively are found to suffer from achieving much lower accuracy on females with darker skin color \cite{buolamwini2018gender}. There are other examples of biases in machines learning, but these three examples already demonstrate that, in practise, machine learning is not always fair, and the unfairness can bring disadvantages to certain groups. 
+
 
 \subsection{Bias Metrics}
 \label{sec:bias_metrics}
-Some metrics have been developed to detect and measure biases in machine learning. This section presents some of the metrics mentioned in this paper to give an overview how bias metrics are calculated and used. The first metric is Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai}. The metric computed as the difference of probabilities of being labelled favourable between the privileged and unprivileged groups. The ideal value of the metric is 1.
+
+\begin{figure*}[h]
+	\includegraphics[width=\linewidth]{figures/wizard-metric}
+	\caption{The decision tree to automatically select the most appropriate bias metrics for particular situations.}
+	\label{fig:wizard-metric}
+\end{figure*}
+
+Some metrics have been developed to detect and measure biases in machine learning. Each metric has its own way to calculate biases and therefore is more preferable than others in particular situations. IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}} \cite{mahoney2020ai} and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}} have provided guidances for the selection. If a bias measurement requires metrics that encompasses group and individual fairness then Theil Index \cite{conceicao2000theyoung,bellamy2018ai} and Generalized Entropy Index \cite{speicher2018unified} are preferable. Theil Index is the generalized entropy index  but with alpha equals to 1. They can be used as a unified metric to measures the inequality in benefit allocation for groups and individuals. Lower scores reflect strong fairness while the higher ones show the opposite. Perfect fairness is indicated by a value of 0. 
+
+If a bias detection aims only to measure individual fairness then Euclidean Distance, Manhattan Distance, and Mahalanobis Distance are the options.
+
+There are two main world views for group fairness: equal and proportional fairness. Equal fairness means under-represented groups should have a similar chance as the rest regarding prediction results and usually is applied to systems perceived to have structural discrimination. For example, A-level, SAT, or other national exams are suspected contain structural discrimination.
+
+The first metric is Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai}. The metric computed as the difference of probabilities of being labelled favourable between the privileged and unprivileged groups. The ideal value of the metric is 1.
 \begin{equation} \label{eq:1}
 	SPD = Pr(\hat{Y} = 1 | D = \text{unprivileged})
 	- Pr(\hat{Y} = 1 | D = \text{privileged})
@@ -326,23 +341,34 @@ Another metric is Disparate Impact \cite{feldman2015disparate,bellamy2018ai} whi
 \end{equation}
 The ideal value of this metric is 1.0. A value $<$ 1 indicates that the labelling advantages the privileged group and a value $>$ 1 disadvantage the unprivileged group.
 
+
+In contrast, proportional fairness, a.k.a. what you see is what you get (WYSIWYG),  perceive that certain features correlate with labels and therefore the features can be used for prediction. For example, the scores of A-level, SAT, or other national exams correlate with incomes in the future.
+
+Average Odds Difference \cite{bellamy2018ai} is a metric that computes bias as the average difference of false positive rate ($FPR = FP/N$, false positives / all negatives) and true positive rate ($TPR = TP/P$, true positives / positives) between unprivileged and privileged groups.
+\begin{equation}
+	\begin{aligned}
+		AOD = \tfrac{1}{2}* ((FPR_{D = \text{unprivileged}} - FPR_{D = \text{privileged}}) +\\
+		(TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}))
+	\end{aligned}
+\end{equation}
+The ideal value of the metric is 0. A negative value indicates the privileged group is more favourable than the unprivileged group while a positive value indicates the opposite. 
+
+
+
+
 Equal Opportunity Difference \cite{bellamy2018ai} is a metric that calculates bias as the difference of true positive rates between the unprivileged and the privileged groups. 
 \begin{equation}
 	EOD = TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}	
 \end{equation}
 The true positive rate is the ratio of true positives to the total number of all positive outcomes ($TPR=TP/P$) for a given group. The ideal value is 0, and a negative value indicates higher preference to the privileged group while a positive one is the opposite.
 
-Average Odds Difference \cite{bellamy2018ai} is a metric that computes bias as the average difference of false positive rate ($FPR = FP/N$, false positives / all negatives) and true positive rate ($TPR = TP/P$, true positives / positives) between unprivileged and privileged groups.
-\begin{equation}
-\begin{aligned}
-	AOD = \tfrac{1}{2}* ((FPR_{D = \text{unprivileged}} - FPR_{D = \text{privileged}}) +\\
-	(TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}))
-\end{aligned}
-\end{equation}
-The ideal value of the metric is 0. A negative value indicates the privileged group is more favourable than the unprivileged group while a positive value indicates the opposite. 
 
-Theil Index is the generalized entropy index  with alpha equals to 1 \cite{conceicao2000theyoung,bellamy2018ai}. It can be used as a unified metric to measures the inequality in benefit allocation for groups and individuals \cite{speicher2018unified}. Perfect fairness is indicated by a value of 0. Lower scores reflect strong fairness while the higher ones show the opposite.
 
+\begin{figure*}
+	\includegraphics[width=\linewidth]{figures/wizard-debiasing}
+	\caption{The decision tree to automatically select the most appropriate debiasing algorithms based on the answers to the wizard's questions.}
+	\label{fig:wizard-debiasing}
+\end{figure*}
 
 \subsection{Bias Mitigation}
 \label{sec:bias_mitigation}
@@ -395,19 +421,19 @@ Model-Driven Sofware Development (MDSD) is a development paradigm in software en
 
 MDSE aims for a productive environment by speeding up development through artefact generation and managing complexity by raising up abstraction level in the form of simpler modelling languages, such as domain-specific Languages (DSLs) \cite{volter2013model}. 
 
-\begin{table*}[]
-	\centering
-	\caption{Toolkits for bias mitigation in machine learning.}
-	\label{tab:bias-mitigation-toolkits}
-	\begin{tabular}{p{.15\textwidth}p{.39\textwidth}p{.39\textwidth}}
-		\hline
-		\multicolumn{1}{c}{\textbf{Toolkit}}                                   & \multicolumn{1}{c}{\textbf{Website}}                                                                                                  & \multicolumn{1}{c}{\textbf{Repository}}                                                                                     \\ \hline
-		Fairlearn                                                              & \url{https://fairlearn.org}                                                                                                                 & \url{https://github.com/fairlearn/fairlearn}                                                                                      \\
-		Google What-If                                                         & \url{https://pair-code.github.io/what-if-tool}                                                                                              & \url{https://github.com/pair-code/what-if-tool}                                                                                   \\
-		Scikit-fairness, Scikit-lego & \url{https://scikit-fairness.netlify.app}, \url{https://scikit-lego.readthedocs.io/en/latest/index.html} & \url{https://github.com/koaning/scikit-fairness},  \url{https://github.com/koaning/scikit-lego} \\
-		IBM AI Fairness 360                                                    & \url{https://aif360.mybluemix.net}                                                                                                          & \url{https://github.com/Trusted-AI/AIF360}                                                                                        \\ \hline
-	\end{tabular}
-\end{table*}
+%\begin{table*}[]
+%	\centering
+%	\caption{Toolkits for bias mitigation in machine learning.}
+%	\label{tab:bias-mitigation-toolkits}
+%	\begin{tabular}{p{.15\textwidth}p{.39\textwidth}p{.39\textwidth}}
+%		\hline
+%		\multicolumn{1}{c}{\textbf{Toolkit}}                                   & \multicolumn{1}{c}{\textbf{Website}}                                                                                                  & \multicolumn{1}{c}{\textbf{Repository}}                                                                                     \\ \hline
+%		Fairlearn                                                              & \url{https://fairlearn.org}                                                                                                                 & \url{https://github.com/fairlearn/fairlearn}                                                                                      \\
+%		Google What-If                                                         & \url{https://pair-code.github.io/what-if-tool}                                                                                              & \url{https://github.com/pair-code/what-if-tool}                                                                                   \\
+%		Scikit-fairness, Scikit-lego & \url{https://scikit-fairness.netlify.app}, \url{https://scikit-lego.readthedocs.io/en/latest/index.html} & \url{https://github.com/koaning/scikit-fairness},  \url{https://github.com/koaning/scikit-lego} \\
+%		IBM AI Fairness 360                                                    & \url{https://aif360.mybluemix.net}                                                                                                          & \url{https://github.com/Trusted-AI/AIF360}                                                                                        \\ \hline
+%	\end{tabular}
+%\end{table*}
 
 \subsection{Toolkit Selection}
 \label{sec:toolkit_selection}
@@ -545,17 +571,7 @@ from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_function
 \label{sec:wizard}
 There are many available debiasing algorithms and bias metrics that users can select to mitigates biases in machine learning. Some of them are better than others in certain context. FairML provides a wizard feature assists users to select the most appropriate debiasing algorithms and bias metrics based on their answers to the wizard's questions. The wizard follows the guidances suggested by \cite{mahoney2020ai}, IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}}, and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}}.
 
-\begin{figure*}
-	\includegraphics[width=\linewidth]{figures/wizard-metric}
-	\caption{The decision three to automatically select the most appropriate bias metrics based on the users' answers to the wizard's questions.}
-	\label{fig:wizard-metric}
-\end{figure*}
 
-\begin{figure*}
-	\includegraphics[width=\linewidth]{figures/wizard-debiasing}
-	\caption{The decision three to automatically select the most appropriate debiasing algorithms based on the answers to the wizard's questions.}
-	\label{fig:wizard-debiasing}
-\end{figure*}
 
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
@@ -868,22 +884,10 @@ as stated in Section \ref{sec:productivity}.
 
 \subsection{Threats to Validity}
 \label{sec:threats_to_validity}
-
-
-
-\section{Lessons Learned}
-\label{sec:lessons_learned}
-
-\begin{itemize}
-	\item Using documentation/repository as the resource for domain analysis. 
-	\item Using existing code as benchmark.
-	\item Using third-party Python-to-Jupyter transformation.
-\end{itemize}
-
+While we have tested FairML with the examples of IBM AI Fairness 360, we have not performed user evaluation due to limited resource to obtain feedback from the experienced users in the field. Also, there is a chance that the examples do not reflect bias mitigation in the real world. These threats have been identified by \cite{lee2021landscape} as the adoption of fairness toolkits is still not a common practice.
 
 \section{Related Work}
 \label{sec:related_work}
-
 
 Some toolkits have been developed to measure biases in machine learning. 
 Another FairML, a toolbox developed by \cite{adebayo2016fairml}, audits the fairness of a predictive model by calculating the relative effects of its different inputs on its predictions by leveraging four input ranking algorithms and model compression. 

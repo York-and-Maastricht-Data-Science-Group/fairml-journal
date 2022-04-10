@@ -321,73 +321,64 @@ For examples, in 2006, it has been found that COMPAS, the algorithm used for rec
 	\label{fig:wizard-metric}
 \end{figure*}
 
-Some metrics have been developed to detect and measure biases in machine learning. Each metric has its own way to calculate biases and therefore is more preferable than others in particular situations. IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}} \cite{mahoney2020ai} and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}} have provided guidances for the selection. If a bias measurement requires metrics that encompasses group and individual fairness then Theil Index \cite{conceicao2000theyoung,bellamy2018ai} and Generalized Entropy Index \cite{speicher2018unified} are preferable. Theil Index is the generalized entropy index  but with alpha equals to 1. They can be used as a unified metric to measures the inequality in benefit allocation for groups and individuals. Lower scores reflect strong fairness while the higher ones show the opposite. Perfect fairness is indicated by a value of 0. 
+Some metrics have been developed to detect and measure biases in machine learning. Each metric has its own way to calculate biases and therefore is more preferable than others in particular situations. IBM AI Fairness 360 \cite{mahoney2020ai,ibmaif3602022guidance} and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}} have provided guidances for the selection, summarised in Figure \ref{fig:wizard-metric}. If a bias measurement requires metrics that encompasses group and individual fairness then Theil Index \cite{conceicao2000theyoung,bellamy2018ai} and Generalized Entropy Index \cite{speicher2018unified} are preferable. Theil Index is the generalized entropy index  but with alpha equals to 1. They can be used as a unified metric to measures the inequality in benefit allocation for groups and individuals \cite{ibmaif3602022guidance,mahoney2020ai}. Lower scores reflect strong fairness while the higher ones show the opposite. Perfect fairness is indicated by a value of 0 \cite{lale2022doc}. 
 
-If a bias detection aims only to measure individual fairness then Euclidean Distance, Manhattan Distance, and Mahalanobis Distance are the options. These metrics are used to measure the distance of the same individual in the original and debiased datasets \cite{bellamy2018ai}. Applying bias mitigation in preprocessing can deliver group fairness but with the risk sacrificing individual fairness. The approach in \cite{calmon2017optimized} aims for group fairness but uses these metrics as constraints to limit the distortion of its bias mitigation. 
+Euclidean Distance, Manhattan Distance, and Mahalanobis Distance are the metrics to measure individual fairness. These metrics are used to measure the distance of the same individual in the original and debiased datasets \cite{bellamy2018ai}. These metrics are required to ensure consistency since data transformation, when applying bias mitigation in preprocessing, can achieve group fairness but might cause unfairness on individuals. The reference \cite{calmon2017optimized} uses these metrics as constraints to limit the distortion of its bias mitigation so that group fairness can be achieved with individual fairness in mind. 
 
-There are two main world views for group fairness: equal and proportional fairness \cite{mahoney2020ai,bellamy2018ai}. Equal fairness means under-represented groups should have a similar chance as the rest regarding prediction results and usually is applied to systems perceived to have structural discrimination. For example, A-level, SAT, or other national exams are suspected contain structural discrimination.
+There are two main world views for group fairness: equal and proportional fairness \cite{mahoney2020ai,ibmaif3602022guidance}. Equal fairness means under-represented groups should have a similar chance as the rest regarding prediction results and usually is applied to systems perceived to have structural discrimination. For example, A-level, SAT, or other national exams are suspected contain structural discrimination. Statistical Parity Difference \cite{dwork2012fairness,mahoney2020ai,ibmaif3602022guidance} and Disparate Impact \cite{feldman2015disparate,mahoney2020ai,ibmaif3602022guidance} are the common metrics to measure equal fairness. 
 
-The first metric is Statistical parity Difference \cite{dwork2012fairness,bellamy2018ai}. The metric computed as the difference of probabilities of being labelled favourable between the privileged and unprivileged groups. The ideal value of the metric is 1.
+Statistical Parity Difference is computed as the difference of probabilities of being labelled favourable between the privileged and unprivileged groups \cite{dwork2012fairness,ibmaif3602022doc,bellamy2018ai}. The ideal value of the metric is 1.
 \begin{equation} \label{eq:1}
 	SPD = Pr(\hat{Y} = 1 | D = \text{unprivileged})
 	- Pr(\hat{Y} = 1 | D = \text{privileged})
 \end{equation}
-The ideal value of the metric is 0. A negative value implies that the labelling favours the privileged group while a positive value implies the opposite.
-
-Another metric is Disparate Impact \cite{feldman2015disparate,bellamy2018ai} which is computed as the ratio of probabilities of being labelled favourable between the unprivileged and privileged groups.
+The ideal value of the metric is 0. A negative value implies that the labelling favours the privileged group while a positive value implies the opposite \cite{ibmaif3602022doc,bellamy2018ai}. Disparate Impact is computed as the ratio of probabilities of being labelled favourable between the unprivileged and privileged groups \cite{feldman2015disparate,ibmaif3602022doc,bellamy2018ai}.
 \begin{equation}
 	DI = \frac{Pr(\hat{Y} = 1 | D = \text{unprivileged})}
 	{Pr(\hat{Y} = 1 | D = \text{privileged})}
 \end{equation}
-The ideal value of this metric is 1.0. A value $<$ 1 indicates that the labelling advantages the privileged group and a value $>$ 1 disadvantage the unprivileged group.
+The ideal value of this metric is 1.0. A value $<$ 1 indicates that the labelling advantages the privileged group and a value $>$ 1 disadvantage the unprivileged group \cite{ibmaif3602022doc,bellamy2018ai}.
 
-
-In contrast, proportional fairness, a.k.a. what you see is what you get (WYSIWYG),  perceive that certain features correlate with labels and therefore the features can be used for prediction. For example, the scores of A-level, SAT, or other national exams correlate with incomes in the future.
-
-Average Odds Difference \cite{bellamy2018ai} is a metric that computes bias as the average difference of false positive rate ($FPR = FP/N$, false positives / all negatives) and true positive rate ($TPR = TP/P$, true positives / positives) between unprivileged and privileged groups.
+In contrast, proportional fairness, a.k.a. what you see is what you get (WYSIWYG),  perceives that certain features correlate with certain labels, and therefore the features can be used to predict the labels. For example, the scores of A-level, SAT, or other national exams correlate with incomes in the future \cite{mahoney2020ai,ibmaif3602022guidance}. Average Odds Difference is the metric to measure proportional fairness. The metric computes bias as the average difference of false positive rate ($FPR = FP/N$, false positives / all negatives) and true positive rate ($TPR = TP/P$, true positives / positives) between unprivileged and privileged groups \cite{ibmaif3602022doc,bellamy2018ai}.
 \begin{equation}
 	\begin{aligned}
 		AOD = \tfrac{1}{2}* ((FPR_{D = \text{unprivileged}} - FPR_{D = \text{privileged}}) +\\
 		(TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}))
 	\end{aligned}
 \end{equation}
-The ideal value of the metric is 0. A negative value indicates the privileged group is more favourable than the unprivileged group while a positive value indicates the opposite. 
+The ideal value of the metric is 0. A negative value indicates the privileged group is more favourable than the unprivileged group while a positive value indicates the opposite \cite{ibmaif3602022doc,bellamy2018ai}. 
 
-
-
-
-Equal Opportunity Difference \cite{bellamy2018ai} is a metric that calculates bias as the difference of true positive rates between the unprivileged and the privileged groups. 
+There are also other metrics that fall in between equal and proportional fairness. For example, Equal Opportunity Difference \cite{ibmaif3602022doc,bellamy2018ai} is a metric that calculates bias as the difference of true positive rates between the unprivileged and the privileged groups. 
 \begin{equation}
 	EOD = TPR_{D = \text{unprivileged}} - TPR_{D = \text{privileged}}	
 \end{equation}
-The true positive rate is the ratio of true positives to the total number of all positive outcomes ($TPR=TP/P$) for a given group. The ideal value is 0, and a negative value indicates higher preference to the privileged group while a positive one is the opposite.
-
-
+The true positive rate is the ratio of true positives to the total number of all positive outcomes ($TPR=TP/P$) for a given group. The ideal value is 0, and a negative value indicates higher preference to the privileged group while a positive one is the opposite \cite{ibmaif3602022doc,bellamy2018ai}. Other metrics in this space are False Negative Rate Ratio and Difference, False Omission Rate Ratio and Difference, Error Rate, False Positive Rate Ratio and Difference, and False Discovery Rate Ratio and Difference \cite{mahoney2020ai,ibmaif3602022guidance}.
 
 \begin{figure*}
 	\includegraphics[width=\linewidth]{figures/wizard-debiasing}
-	\caption{The decision tree to automatically select the most appropriate debiasing algorithms based on the answers to the wizard's questions.}
+	\caption{The decision tree to select the most appropriate debiasing algorithms for particular situations.}
 	\label{fig:wizard-debiasing}
 \end{figure*}
 
 \subsection{Bias Mitigation}
 \label{sec:bias_mitigation}
 
-Debiasing algorithms have been developed to reduce biases in machine learning, and they can be categorised based on the stages where they are applied in machine learning pipelines: pre-processing, in-processing, and post-processing. 
+Debiasing algorithms have been developed to reduce biases in machine learning, and they can be categorised based on the stages where they are applied in machine learning pipelines: pre-processing, in-processing, and post-processing. References \cite{mahoney2020ai,ibmaif3602022guidance} provide guidances which debiasing algorithms are best for specific situations, summarised in Figure \ref{fig:wizard-debiasing}.
 
-In preprocessing, \textbf{Optimized Preprocessing} \cite{calmon2017optimized} and \textbf{Disparate Impact Remover} \cite{feldman2015disparate} reduce biases by modifying the values of features of a dataset, implying that the dataset should be modifiable. 
-Optimized Preprocessing learns a probabilistic transformation that modify the labels and features of a dataset but with objectives and constraints on individual distortion, data fidelity, and group fairness.
-Disparate impact remover alters the values of features to increase the fairness of groups while preserving rank-ordering within groups.
-\textbf{Learning Fair Representation} (LFR) \cite{zemel2013lfr} preprocesses a dataset by encoding data into a latent space and obfuscates the values of protected attributes.
-\textbf{Reweighing} \cite{kamiran2011reweighing} does not alter the values of features but works by altering only the weight of each label/prediction to gain fairness. All of these debiasing algorithms aim to ensure fairness before classification.
+It is recommended to mitigate unfairness in preprocessing since biases that are reduced are intrinsic in datasets \cite{mahoney2020ai}. Unfortunately, there are conditions where altering datasets is prohibited. So, if modifying datasets is not allowed, \textbf{Reweighing} \cite{kamiran2011reweighing} can be an option since it does not alter the values of features but works by altering only the weight of each label/prediction to gain fairness. If modifying datasets is allowed, \textbf{Optimized Preprocessing} \cite{calmon2017optimized}, \textbf{Disparate Impact Remover} \cite{feldman2015disparate}, and \textbf{Learning Fair Representation} (LFR) \cite{zemel2013lfr} can be the options except that LFR does not provide transparency since it encodes data into a latent space, and therefore the first two are preferable when transparency of dataset transformation is required.
+Optimized Preprocessing learns a probabilistic transformation that modify the labels and features of a dataset but with objectives and constraints on individual distortion, data fidelity, and group fairness \cite{mahoney2020ai,calmon2017optimized}.
+Disparate Impact Remover alters the values of features to increase the fairness of groups while preserving rank-ordering within groups \cite{mahoney2020ai,feldman2015disparate}.
+LFR preprocesses a dataset by encoding data into a latent space and obfuscates the values of protected attributes \cite{mahoney2020ai,zemel2013lfr}.
 
-In inprocessing, \textbf{Prejudice Remover} \cite{kamishima2012prejudice} adds a discrimination-aware regularization term to the learning objective.
-\textbf{Meta Fair Classification} takes the fairness metric as part of the input and returns a classifier optimized with respect to that fairness metric.
-\textbf{Grid Search Reduction} is an in-processing technique that can be used for fair classification or fair regression. For classification it reduces fair classification to a sequence of cost-sensitive classification problems, returning the deterministic classifier with the lowest empirical error subject to fair classification constraints among the candidates searched. For regression it uses the same priniciple to return a deterministic regressor with the lowest empirical error subject to the constraint of bounded group loss.
-\textbf{Gerryfair Classification} is an algorithm for learning classifiers that are fair with respect to rich subgroups. Rich subgroups are defined by (linear) functions over the sensitive attributes, and fairness notions are statistical: false positive, false negative, and statistical parity rates. This implementation uses a max of two regressions as a cost-sensitive classification oracle, and supports linear regression, support vector machines, decision trees, and kernel regression. 
-\textbf{Exponentiated Gradient Reduction} is an in-processing technique that reduces fair classification to a sequence of cost-sensitive classification problems, returning a randomized classifier with the lowest empirical error subject to fair classification constraints.
-\textbf{Adversarial Debiasing} is an in-processing technique that learns a classifier to maximize prediction accuracy and simultaneously reduce an adversary's ability to determine the protected attribute from the predictions. This approach leads to a fair classifier as the predictions cannot carry any group discrimination information that the adversary can exploit.
-Among in-processing algorithms, the prejudice remover is limited to learning algorithms that allow for regularization terms whereas the adversarial debiasing algorithm allows for a more general set of learning algorithms, and may be preferred for that reason.
+Bias mitigation can also be applied in inprocessing by interfering training algorithms. The debiasing algorithms applied in processing mainly work by penalising biases, usually using fairness constrains or objectives that limit or regularise biases in classifiers \cite{mahoney2020ai}. For instance, \textbf{Prejudice Remover} \cite{kamishima2012prejudice} adds a discrimination-aware regularization term to the learning objective. However, it is limited only to the learning algorithms that support for regularisation terms \cite{mahoney2020ai,ibmaif3602022guidance}. Because of the limitation, users can consider other inprocessing algorithms that allows for a more general set of learning algorithms, such as \textbf{Adversarial Debiasing} \cite{mahoney2020ai,ibmaif3602022guidance}. \textbf{Adversarial Debiasing} \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while also lower an adversary's ability to determine the protected attribute from the predictions. This approach causes the predictions unable to carry any group discrimination information that the adversary can exploit and therefore leads to a fair classifier \cite{ibmaif3602022guidance}. Other inprocessing debiasing algorithms are \textbf{Meta Fair Classification} \cite{celis2019metafair}, \textbf{Gerryfair Classification} \cite{kearns2018gerry,kearns2019gerry}, \textbf{Exponentiated Gradient Reduction} \cite{agarwal18grid}, and \textbf{Grid Search Reduction} \cite{agarwal18grid,agarwal19grid}.
+
+%\textbf{Meta Fair Classification} \cite{celis2019metafair} takes the fairness metric as part of the input and returns a classifier optimized with respect to that fairness metric.
+%\textbf{Grid Search Reduction} \cite{agarwal18grid,agarwal19grid} is an in-processing technique that can be used for fair classification or fair regression. For classification it reduces fair classification to a sequence of cost-sensitive classification problems, returning the deterministic classifier with the lowest empirical error subject to fair classification constraints among the candidates searched. For regression it uses the same priniciple to return a deterministic regressor with the lowest empirical error subject to the constraint of bounded group loss.
+%\textbf{Gerryfair Classification} \cite{kearns2018gerry,kearns2019gerry} is an algorithm for learning classifiers that are fair with respect to rich subgroups. Rich subgroups are defined by (linear) functions over the sensitive attributes, and fairness notions are statistical: false positive, false negative, and statistical parity rates. This implementation uses a max of two regressions as a cost-sensitive classification oracle, and supports linear regression, support vector machines, decision trees, and kernel regression. 
+%\textbf{Exponentiated Gradient Reduction} \cite{agarwal18grid} reduces fair classification to a sequence of cost-sensitive classification problems, returning a randomized classifier with the lowest empirical error subject to fair classification constraints.
+%\textbf{Prejudice Remover} \cite{kamishima2012prejudice} adds a discrimination-aware regularization term to the learning objective.
+%\textbf{Adversarial Debiasing} \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while simultaneously reduces an adversary's ability to determine the protected attribute from the predictions. This approach leads to a fair classifier as the predictions cannot carry any group discrimination information that the adversary can exploit.
+%Among in-processing algorithms, the prejudice remover is limited to learning algorithms that allow for regularisation terms whereas the adversarial debiasing algorithm allows for a more general set of learning algorithms, and may be preferred for that reason.
 
 
 %Adversarial Debiasing,   Exponentiated Gradient Reduction, 
@@ -401,13 +392,8 @@ Among in-processing algorithms, the prejudice remover is limited to learning alg
 
 %The current AIF360 implementations of some algorithms take arguments on which fairness metric to optimize (e.g. optimized pre-processing and reject option) and some do not (e.g. disparate impact remover and equalized odds post-processing), which may imply better and worse performance by some algorithms with respect to some metrics.  The result of improving one fairness on other fairness metrics is complicated [7].
 
-
 In postprocessing, \textbf{Reject Option Classification} \cite{kamiran2012reject} gives favourable outcomes to unprivileged groups but also does the opposite to privileged groups in a confidence band around the decision boundary with the highest uncertainty.
-\textbf{Equalised Odds Postprocessing} \cite{hardt2016equal,pleiss2017equal} solves a linear program to find probabilities with which to change output labels to optimise equalized odds.
-\textbf{Calibrated Equalised Odds Postprocessing} \cite{pleiss2017equal} optimises over calibrated classifier score outputs to find probabilities with which to change output labels with an equalised odds
-objective. 
-Both equalized odds algorithms have a randomised component while the reject option algorithm is deterministic.
-
+\textbf{Equalised Odds Postprocessing} \cite{hardt2016equal,pleiss2017equal} and \textbf{Calibrated Equalised Odds Postprocessing} \cite{pleiss2017equal} try to find to find probabilities with which to change output labels to optimise equalized odds objectives. The former does it through solving linear program while the latter by optimising over calibrated classifier score. Both the equalized odds algorithms have a randomised component while the reject option algorithm is deterministic.
 
 \section{Model-based Bias Mitigation}
 \label{sec:model_based_bias_mitigation}
@@ -756,74 +742,42 @@ There are many available debiasing algorithms and bias metrics that users can se
 \end{table*}
 
 \begin{table*}[]
-	\caption{Lines of code of the original examples (Ori LoC), FairML models (Model LoC), and generated code (Gen LoC).}
-	\label{tab:loc}
-	\begin{tabular}{clrrrrrr}
+	\caption{Comparison of numbers of lines of code between original examples (Original LoC), FairML models (Model LoC), and generated code (Generated LoC) as well as the generation time of FairML and the execution time of the original examples and generated code (seconds). See Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2} for the descriptions of the codes in the first column.}
+	\label{tab:evaluation}
+	\begin{tabular}{crrrrrrrrrr}
 		\hline
-		\multicolumn{1}{c}{\textbf{Code}} &
-		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Example/File Name \\ (*.ipynb)\end{tabular}}} &
+		\textbf{Code} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Ori\\ LoC\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model\\ LoC\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen\\ LoC\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model  LoC/\\ Ori  LoC\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Model LoC\end{tabular}}} &
-		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} \\ \hline
-		E01 & Demo Adversarial Debiasing                        & 133 &    &     &      &      &      \\
-		E02 & Demo Callibrated Eqodd Postprocessing             & 257 &    &     &      &      &      \\
-		E03 & Demo Disparate Impact Remover                     & 50  & 50 & 367 & 1.00 & 7.34 & 7.34 \\
-		E04 & Demo Exponentiated Gradient Reduction             & 93  & 33 & 110 & 0.35 & 3.33 & 1.18 \\
-		E05 & Demo Gerryfair                                    & 90  &    &     &      &      &      \\
-		E06 & Demo LFR                                          & 103 &    &     &      &      &      \\
-		E07 & Demo   Lime                                       & 238 &    &     &      &      &      \\
-		E08 & Demo MDSS Classifier Metric                       & 130 &    &     &      &      &      \\
-		E09 & Demo Meta Classifier                              & 95  & 67 & 345 & 0.71 & 5.15 & 3.63 \\
-		E10 & Demo Optim Data Preproc                           & 233 &    &     &      &      &      \\
-		E11 & Demo Optim Preproc Adult                          & 35  & 30 & 85  & 0.86 & 2.83 & 2.43 \\
-		E12 & Demo Reject Option Classification                 & 143 &    &     &      &      &      \\
-		E13 & Demo Reweighing Preproc                           & 212 & 59 & 125 & 0.28 & 2.12 & 0.59 \\
-		E14 & Demo Short Gerryfair Test                         & 52  & 50 & 176 & 0.96 & 3.52 & 3.38 \\
-		E15 & Tutorial Credit Scoring                           & 30  & 25 & 84  & 0.83 & 3.36 & 2.80 \\
-		E16 & Tutorial Medical Expenditure                      & 356 & 90 & 554 & 0.25 & 6.16 & 1.56 \\
-		E17 & Demo Exponentiated Gradient Reduction Sklearn     & 54  &    &     &      &      &      \\
-		E18 & Demo Grid Search Reduction Classification Sklearn & 52  &    &     &      &      &      \\
-		E19 & Demo Grid Search Reduction Regression Sklearn     & 64  &    &     &      &      &      \\
-		E20 & Demo MDSS Classifier Metric Sklearn               & 66  &    &     &      &      &      \\
-		E21 & Demo New Features                                 & 82  &    &     &      &      &      \\ \hline
-	\end{tabular}
-\end{table*}
-
-\begin{table*}[]
-	\caption{The generation time of FairML and execution time of the original examples and generated code (seconds).}
-	\label{tab:time}
-	\begin{tabular}{clrrrr}
-		\hline
-		\textbf{Code} &
-		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Example/File Name \\ (*.ipynb)\end{tabular}}} &
+		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generation\\ Time\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Original\\ Exec Time\end{tabular}}} &
 		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generated\\ Exec Time\end{tabular}}} &
-		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Exec Time\end{tabular}}} \\ \hline
-		E01 & Demo Adversarial Debiasing                        &       &        &        &      \\
-		E02 & Demo Callibrated Eqodd Postprocessing             &       &        &        &      \\
-		E03 & Demo Disparate Impact Remover                     & 0.186 & 20.991 & 20.23  & 0.96 \\
-		E04 & Demo Exponentiated Gradient Reduction             & 0.166 & 29.927 & 30.211 & 1.01 \\
-		E05 & Demo Gerryfair                                    &       &        &        &      \\
-		E06 & Demo LFR                                          &       &        &        &      \\
-		E07 & Demo   Lime                                       &       &        &        &      \\
-		E08 & Demo MDSS Classifier Metric                       &       &        &        &      \\
-		E09 & Demo Meta Classifier                              & 0.192 & 12.989 & 14.67  & 1.13 \\
-		E10 & Demo Optim Data Preproc                           &       &        &        &      \\
-		E11 & Demo Optim Preproc Adult                          & 0.154 & 8.044  & 15.52  & 1.93 \\
-		E12 & Demo Reject Option Classification                 &       &        &        &      \\
-		E13 & Demo Reweighing Preproc                           & 0.158 & 1.461  & 4.633  & 3.17 \\
-		E14 & Demo Short Gerryfair Test                         & 0.164 & 3.389  & 3.875  & 1.14 \\
-		E15 & Tutorial Credit Scoring                           & 0.162 & 0.017  & 0.078  & 4.59 \\
-		E16 & Tutorial Medical Expenditure                      & 0.198 & 34.897 & 54.248 & 1.55 \\
-		E17 & Demo Exponentiated Gradient Reduction Sklearn     &       &        &        &      \\
-		E18 & Demo Grid Search Reduction Classification Sklearn &       &        &        &      \\
-		E19 & Demo Grid Search Reduction Regression Sklearn     &       &        &        &      \\
-		E20 & Demo MDSS Classifier Metric Sklearn               &       &        &        &      \\
-		E21 & Demo New Features                                 &       &        &        &      \\ \hline
+		\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Time\end{tabular}}} \\ \hline
+		E01 & 133 &    &     &      &      &      &       &        &        &      \\
+		E02 & 257 &    &     &      &      &      &       &        &        &      \\
+		E03 & 50  & 50 & 367 & 1.00 & 7.34 & 7.34 & 0.186 & 20.00 & 20.23  & 0.96 \\
+		E04 & 93  & 33 & 110 & 0.35 & 3.33 & 1.18 & 0.166 & 29.93 & 30.21 & 1.01 \\
+		E05 & 90  &    &     &      &      &      &       &        &        &      \\
+		E06 & 103 &    &     &      &      &      &       &        &        &      \\
+		E07 & 238 &    &     &      &      &      &       &        &        &      \\
+		E08 & 130 &    &     &      &      &      &       &        &        &      \\
+		E09 & 95  & 67 & 345 & 0.71 & 5.15 & 3.63 & 0.192 & 13.00 & 14.67  & 1.13 \\
+		E10 & 233 &    &     &      &      &      &       &        &        &      \\
+		E11 & 35  & 30 & 85  & 0.86 & 2.83 & 2.43 & 0.154 & 8.04  & 15.52  & 1.93 \\
+		E12 & 143 &    &     &      &      &      &       &        &        &      \\
+		E13 & 212 & 59 & 125 & 0.28 & 2.12 & 0.59 & 0.158 & 1.30  & 4.63  & 3.17 \\
+		E14 & 52  & 50 & 176 & 0.96 & 3.52 & 3.38 & 0.164 & 3.40  & 3.88  & 1.14 \\
+		E15 & 30  & 25 & 84  & 0.83 & 3.36 & 2.80 & 0.162 & 0.02  & 0.08  & 4.59 \\
+		E16 & 356 & 90 & 554 & 0.25 & 6.16 & 1.56 & 0.198 & 34.90 & 54.25 & 1.55 \\
+		E17 & 54  &    &     &      &      &      &       &        &        &      \\
+		E18 & 52  &    &     &      &      &      &       &        &        &      \\
+		E19 & 64  &    &     &      &      &      &       &        &        &      \\
+		E20 & 66  &    &     &      &      &      &       &        &        &      \\
+		E21 & 82  &    &     &      &      &      &       &        &        &      \\ \hline
 	\end{tabular}
 \end{table*}
 

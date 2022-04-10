@@ -277,3 +277,5 @@ TSWLatexianTemp*
 fairml.pdf
 *.xlsx
 *.csv
+*.bkp
+*.dtmp

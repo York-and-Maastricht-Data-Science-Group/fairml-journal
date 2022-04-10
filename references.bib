@@ -1,3 +1,105 @@
+@inproceedings{zhang2018adversarial,
+	author = {Zhang, Brian Hu and Lemoine, Blake and Mitchell, Margaret},
+	title = {Mitigating Unwanted Biases with Adversarial Learning},
+	year = {2018},
+	isbn = {9781450360128},
+	publisher = {Association for Computing Machinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/3278721.3278779},
+	doi = {10.1145/3278721.3278779},
+	abstract = {Machine learning is a tool for building models that accurately represent input training data. When undesired biases concerning demographic groups are in the training data, well-trained models will reflect those biases. We present a framework for mitigating such biases by including a variable for the group of interest and simultaneously learning a predictor and an adversary. The input to the network X, here text or census data, produces a prediction Y, such as an analogy completion or income bracket, while the adversary tries to model a protected variable Z, here gender or zip code. The objective is to maximize the predictor's ability to predict Y while minimizing the adversary's ability to predict Z. Applied to analogy completion, this method results in accurate predictions that exhibit less evidence of stereotyping Z. When applied to a classification task using the UCI Adult (Census) Dataset, it results in a predictive model that does not lose much accuracy while achieving very close to equality of odds (Hardt, et al., 2016). The method is flexible and applicable to multiple definitions of fairness as well as a wide range of gradient-based learning models, including both regression and classification tasks.},
+	booktitle = {Proceedings of the 2018 AAAI/ACM Conference on AI, Ethics, and Society},
+	pages = {335–340},
+	numpages = {6},
+	keywords = {unbiasing, multi-task learning, debiasing, adversarial learning},
+	location = {New Orleans, LA, USA},
+	series = {AIES '18}
+}
+@inproceedings{kearns2019gerry,
+	author = {Kearns, Michael and Neel, Seth and Roth, Aaron and Wu, Zhiwei Steven},
+	title = {An Empirical Study of Rich Subgroup Fairness for Machine Learning},
+	year = {2019},
+	isbn = {9781450361255},
+	publisher = {Association for Computing Machinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/3287560.3287592},
+	doi = {10.1145/3287560.3287592},
+	abstract = {Kearns, Neel, Roth, and Wu [ICML 2018] recently proposed a notion of rich subgroup fairness intended to bridge the gap between statistical and individual notions of fairness. Rich subgroup fairness picks a statistical fairness constraint (say, equalizing false positive rates across protected groups), but then asks that this constraint hold over an exponentially or infinitely large collection of subgroups defined by a class of functions with bounded VC dimension. They give an algorithm guaranteed to learn subject to this constraint, under the condition that it has access to oracles for perfectly learning absent a fairness constraint. In this paper, we undertake an extensive empirical evaluation of the algorithm of Kearns et al. On four real datasets for which fairness is a concern, we investigate the basic convergence of the algorithm when instantiated with fast heuristics in place of learning oracles, measure the tradeoffs between fairness and accuracy, and compare this approach with the recent algorithm of Agarwal, Beygelzeimer, Dudik, Langford, and Wallach [ICML 2018], which implements weaker and more traditional marginal fairness constraints defined by individual protected attributes. We find that in general, the Kearns et al. algorithm converges quickly, large gains in fairness can be obtained with mild costs to accuracy, and that optimizing accuracy subject only to marginal fairness leads to classifiers with substantial subgroup unfairness. We also provide a number of analyses and visualizations of the dynamics and behavior of the Kearns et al. algorithm. Overall we find this algorithm to be effective on real data, and rich subgroup fairness to be a viable notion in practice.},
+	booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency},
+	pages = {100–109},
+	numpages = {10},
+	keywords = {Fairness Auditing, Algorithmic Bias, Subgroup Fairness, Fair Classification},
+	location = {Atlanta, GA, USA},
+	series = {FAT* '19}
+}
+
+@InProceedings{kearns2018gerry,
+	title = 	 {Preventing Fairness Gerrymandering: Auditing and Learning for Subgroup Fairness},
+	author =       {Kearns, Michael and Neel, Seth and Roth, Aaron and Wu, Zhiwei Steven},
+	booktitle = 	 {Proceedings of the 35th International Conference on Machine Learning},
+	pages = 	 {2564--2572},
+	year = 	 {2018},
+	editor = 	 {Dy, Jennifer and Krause, Andreas},
+	volume = 	 {80},
+	series = 	 {Proceedings of Machine Learning Research},
+	month = 	 {10--15 Jul},
+	publisher =    {PMLR},
+	pdf = 	 {http://proceedings.mlr.press/v80/kearns18a/kearns18a.pdf},
+	url = 	 {https://proceedings.mlr.press/v80/kearns18a.html},
+	abstract = 	 {The most prevalent notions of fairness in machine learning fix a small collection of pre-defined groups (such as race or gender), and then ask for approximate parity of some statistic of the classifier (such as false positive rate) across these groups. Constraints of this form are susceptible to fairness gerrymandering, in which a classifier is fair on each individual group, but badly violates the fairness constraint on structured subgroups, such as certain combinations of protected attribute values. We thus consider fairness across exponentially or infinitely many subgroups, defined by a structured class of functions over the protected attributes. We first prove that the problem of auditing subgroup fairness for both equality of false positive rates and statistical parity is computationally equivalent to the problem of weak agnostic learning — which means it is hard in the worst case, even for simple structured subclasses. However, it also suggests that common heuristics for learning can be applied to successfully solve the auditing problem in practice. We then derive an algorithm that provably converges in a polynomial number of steps to the best subgroup-fair distribution over classifiers, given access to an oracle which can solve the agnostic learning problem. The algorithm is based on a formulation of subgroup fairness as a zero-sum game between a Learner (the primal player) and an Auditor (the dual player). We implement a variant of this algorithm using heuristic oracles, and show that we can effectively both audit and learn fair classifiers on a real dataset.}
+}
+
+@InProceedings{agarwal18grid,
+	title = 	 {A Reductions Approach to Fair Classification},
+	author =       {Agarwal, Alekh and Beygelzimer, Alina and Dudik, Miroslav and Langford, John and Wallach, Hanna},
+	booktitle = 	 {Proceedings of the 35th International Conference on Machine Learning},
+	pages = 	 {60--69},
+	year = 	 {2018},
+	editor = 	 {Dy, Jennifer and Krause, Andreas},
+	volume = 	 {80},
+	series = 	 {Proceedings of Machine Learning Research},
+	month = 	 {10--15 Jul},
+	publisher =    {PMLR},
+	pdf = 	 {http://proceedings.mlr.press/v80/agarwal18a/agarwal18a.pdf},
+	url = 	 {https://proceedings.mlr.press/v80/agarwal18a.html},
+	abstract = 	 {We present a systematic approach for achieving fairness in a binary classification setting. While we focus on two well-known quantitative definitions of fairness, our approach encompasses many other previously studied definitions as special cases. The key idea is to reduce fair classification to a sequence of cost-sensitive classification problems, whose solutions yield a randomized classifier with the lowest (empirical) error subject to the desired constraints. We introduce two reductions that work for any representation of the cost-sensitive classifier and compare favorably to prior baselines on a variety of data sets, while overcoming several of their disadvantages.}
+}
+
+@InProceedings{agarwal19grid,
+	title = 	 {Fair Regression: Quantitative Definitions and Reduction-Based Algorithms},
+	author =       {Agarwal, Alekh and Dudik, Miroslav and Wu, Zhiwei Steven},
+	booktitle = 	 {Proceedings of the 36th International Conference on Machine Learning},
+	pages = 	 {120--129},
+	year = 	 {2019},
+	editor = 	 {Chaudhuri, Kamalika and Salakhutdinov, Ruslan},
+	volume = 	 {97},
+	series = 	 {Proceedings of Machine Learning Research},
+	month = 	 {09--15 Jun},
+	publisher =    {PMLR},
+	pdf = 	 {http://proceedings.mlr.press/v97/agarwal19d/agarwal19d.pdf},
+	url = 	 {https://proceedings.mlr.press/v97/agarwal19d.html},
+	abstract = 	 {In this paper, we study the prediction of a real-valued target, such as a risk score or recidivism rate, while guaranteeing a quantitative notion of fairness with respect to a protected attribute such as gender or race. We call this class of problems fair regression. We propose general schemes for fair regression under two notions of fairness: (1) statistical parity, which asks that the prediction be statistically independent of the protected attribute, and (2) bounded group loss, which asks that the prediction error restricted to any protected group remain below some pre-determined level. While we only study these two notions of fairness, our schemes are applicable to arbitrary Lipschitz-continuous losses, and so they encompass least-squares regression, logistic regression, quantile regression, and many other tasks. Our schemes only require access to standard risk minimization algorithms (such as standard classification or least-squares regression) while providing theoretical guarantees on the optimality and fairness of the obtained solutions. In addition to analyzing theoretical properties of our schemes, we empirically demonstrate their ability to uncover fairness–accuracy frontiers on several standard datasets.}
+}
+
+
+@inproceedings{celis2019metafair,
+	author = {Celis, L. Elisa and Huang, Lingxiao and Keswani, Vijay and Vishnoi, Nisheeth K.},
+	title = {Classification with Fairness Constraints: A Meta-Algorithm with Provable Guarantees},
+	year = {2019},
+	isbn = {9781450361255},
+	publisher = {Association for Computing Machinery},
+	address = {New York, NY, USA},
+	url = {https://doi.org/10.1145/3287560.3287586},
+	doi = {10.1145/3287560.3287586},
+	abstract = {Developing classification algorithms that are fair with respect to sensitive attributes of the data is an important problem due to the increased deployment of classification algorithms in societal contexts. Several recent works have focused on studying classification with respect to specific fairness metrics, modeled the corresponding fair classification problem as constrained optimization problems, and developed tailored algorithms to solve them. Despite this, there still remain important metrics for which there are no fair classifiers with theoretical guarantees; primarily because the resulting optimization problem is non-convex. The main contribution of this paper is a meta-algorithm for classification that can take as input a general class of fairness constraints with respect to multiple non-disjoint and multi-valued sensitive attributes, and which comes with provable guarantees. In particular, our algorithm can handle non-convex "linear fractional" constraints (which includes fairness constraints such as predictive parity) for which no prior algorithm was known. Key to our results is an algorithm for a family of classification problems with convex constraints along with a reduction from classification problems with linear fractional constraints to this family. Empirically, we observe that our algorithm is fast, can achieve near-perfect fairness with respect to various fairness metrics, and the loss in accuracy due to the imposed fairness constraints is often small.},
+	booktitle = {Proceedings of the Conference on Fairness, Accountability, and Transparency},
+	pages = {319–328},
+	numpages = {10},
+	keywords = {Classification, Algorithmic Fairness},
+	location = {Atlanta, GA, USA},
+	series = {FAT* '19}
+}
+
 @inproceedings{friedler2019fairness,
 	author = {Friedler, Sorelle A. and Scheidegger, Carlos and Venkatasubramanian, Suresh and Choudhary, Sonam and Hamilton, Evan P. and Roth, Derek},
 	title = {A Comparative Study of Fairness-Enhancing Interventions in Machine Learning},
@@ -563,11 +665,27 @@
 	number = {MSR-TR-2020-32},
 }
 
-@misc{ibmaifairness3602022,
-	title={ 360},
+@misc{ibmaif3602022guidance,
+	title={Guidance on choosing metrics and mitigation},
 	author={{IBM Research Trusted AI}},
 	year={2022},
-	url={https://aif360.mybluemix.net/},
+	url={https://aif360.mybluemix.net/resources#guidance},
+	note = {Accessed: 2022-01-30}
+}
+
+@misc{ibmaif3602022doc,
+	title={AI Fairness 360 documentation},
+	author={{AI Fairness 360 (AIF360) Authors}},
+	year={2022},
+	url={https://aif360.readthedocs.io/en/stable/},
+	note = {Accessed: 2022-01-30}
+}
+
+@misc{lale2022doc,
+	title={Welcome to LALE’s API documentation!},
+	author={{IBM AI Research}},
+	year={2022},
+	url={https://lale.readthedocs.io/en/latest/modules/lale.lib.aif360.util.html#lale.lib.aif360.util.theil_index},
 	note = {Accessed: 2022-01-30}
 }
 

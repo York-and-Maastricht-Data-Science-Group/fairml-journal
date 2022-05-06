@@ -558,12 +558,23 @@ from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_function
 \end{lstlisting}
 
 
+
+\begin{figure*}
+	\includegraphics[width=\linewidth]{figures/table-output.png}
+	\caption{The table ouput displayed in the generated Juypter notebook file based on the model defined in Listing \ref{lst:fairml_model}.}
+	\label{fig:table-output}
+\end{figure*}
+
 \subsection{Wizard}
 \label{sec:wizard}
 There are many available debiasing algorithms and bias metrics that users can select to mitigates biases in machine learning. Some of them are better than others in certain context. FairML provides a wizard feature assists users to select the most appropriate debiasing algorithms and bias metrics based on their answers to the wizard's questions. The wizard follows the guidances suggested by \cite{mahoney2020ai}, IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}}, and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}}.
 
+\subsection{Generated Files}
+\label{sec:generated_files}
 
+Based on the model defined in Listing \ref{lst:fairml_model}, FairML generates a Jupyter notebook file containing the code that performs the bias mitigation, explanation of the bias measured, and references to the selected classifiers and debiasing algorithms to help users understand the applied bias mitigation and metrics measured. 
 
+It also contains a table (Figure \ref{fig:table-output}) and chart that compare the bias metrics measured by different combination of datasets, classifiers, and debiasing algorithms to help users select the best combinations that fits with their contexts. 
 
 \newcolumntype{L}[1]{>{\raggedright\arraybackslash}p{#1}}
 \newcolumntype{C}[1]{>{\centering\arraybackslash}p{#1}}

@@ -38,6 +38,8 @@
 %\documentclass[sigconf]{acmart}
 \documentclass[sigconf,review]{acmart}
 
+\usepackage{subcaption}
+\usepackage{graphicx}
 \usepackage{enumitem}
 \usepackage{color, colortbl}
 \usepackage{ragged2e}
@@ -293,7 +295,7 @@
 	\label{sec:introduction}
 	The use of machine learning is pervasive nowadays, from personal daily activities, such as face recognition for authentication and voice processing when talking to intelligent assistants (e.g., Alexa, Siri), to performing sensitive, ethical tasks, such as predicting criminal behaviours and classifying profiles for loans. While machine learning does bring efficiency, models produced by machine learning are not guaranteed to be free from bias, particularly when trained and tested with data produced in discriminatory environments. This can be unacceptable, mainly when it touches sensitive attributes, such as sex, race, age, etc., and amplifies unfairness. 
 	
-	In 2016, COMPASS an algorithm for predicting recidivism was found to produce a high false-negative rate for white people and a high false-positive rate for black people \cite{angwin2016machine}. Some commercial face recognition services were also found to have significantly lower accuracy on darker-skin females \cite{buolamwini2018gender}. Moreover, A jobs platform was found to rank qualified female candidates far lower than qualified male candidates even though they have similar properties \cite{lahoti2019ifair}. These are some instances that show how biases in machine learning can promote unfairness. 
+	In 2016, COMPASS, an algorithm for predicting recidivism, was found to produce a high false-negative rate for white people and a high false-positive rate for black people \cite{angwin2016machine}. Some commercial face recognition services were also found to have significantly lower accuracy on darker-skin females \cite{buolamwini2018gender}. Moreover, A jobs platform was found to rank qualified female candidates far lower than qualified male candidates even though they have similar properties \cite{lahoti2019ifair}. These are some instances that show how biases in machine learning can promote unfairness. 
 	
 	Some approaches have contributed to the mitigation of such biases by providing bias metrics and debiasing algorithms (more in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation}). 
 	Different toolkits have implemented these metrics and algorithms.
@@ -303,7 +305,7 @@
 	
 	Model-Driven Sofware Development (MDSE) leverages the abstraction of software development by hiding technical details of implementations that can be automated \cite{brambilla2017model}. Thus, users can focus on essential aspects through the use of simpler modelling languages, and the target implementation can be automatically generated, which in turn improves productivity \cite{volter2013model}. The use of MDSE would benefit data scientists since it allows them to search for the best bias mitigation methods for given cases at a higher abstraction level. They also do not have to code the implementation of the search process in general/statistical programming languages since it can be automatically generated and then fine-tuned later on. 
 	
-	In this paper we introduce FairML, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
+	In this paper we introduce FairML\footnote{FairML's prototype can be found at \url{https://github.com/York-and-Maastricht-Data-Science-Group/fairml}}, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
 	\begin{enumerate}
 		\item FairML raises the abstraction of bias measurement and mitigation so that users can configure their bias mitigation model in YAML (YAML Ain't Markup Language), a human-friendly declarative language \cite{evans2017yaml}, without having to code in general/statistical programming languages.
 		\item FairML supports a certain degree of expressiveness, allowing users to experiment with different kinds of bias metrics, bias mitigation algorithms, datasets, classifiers, and their parameters to find the best combinations that reduce biases but with acceptable accuracy.
@@ -412,8 +414,8 @@
 	
 	%The current AIF360 implementations of some algorithms take arguments on which fairness metric to optimise (e.g. optimised pre-processing and reject option), and some do not (e.g. disparate impact remover and equalised odds post-processing) may imply better and worse performance by some algorithms for some metrics. Improving one fairness on other fairness metrics is complicated [7].
 	
-	In post-processing, Reject Option Classification \cite{kamiran2012reject} favours outcomes to unprivileged groups and does the opposite to privileged groups in a confidence band around the decision boundary with the highest uncertainty.
-	{Equalised Odds Postprocessing \cite{hardt2016equal,pleiss2017equal} and Calibrated Equalised Odds Postprocessing \cite{pleiss2017equal} try to find to find probabilities with which to change output labels to optimise equalized odds objectives. The former achieves it by solving linear programs while the latter optimises over calibrated classifier scores. The two equalised odds algorithms have a randomised component, while the reject option algorithm is deterministic.
+	Post-processing bias mitigation can only be performed if the result of a prediction can be changed. Reject Option Classification \cite{kamiran2012reject} favours outcomes to unprivileged groups and does the opposite to privileged groups in a confidence band around the decision boundary with the highest uncertainty.
+	{Equalised Odds Postprocessing \cite{hardt2016equal,pleiss2017equal} and Calibrated Equalised Odds Postprocessing \cite{pleiss2017equal} try to find to find probabilities with which to change output labels to optimise equalized odds objectives. The former achieves it by solving linear programs while the latter optimises over calibrated classifier scores. The two equalised odds algorithms have a randomised component, and both can be preferred because of that characteristic. Otherwise, the reject option algorithm is the alternative option since it is deterministic.
 	
 	\section{Model-based Bias Mitigation}
 	\label{sec:model_based_bias_mitigation}
@@ -504,14 +506,10 @@
 %	\textbf{We need to explain what the dataset is, what we're trying to predict and where the bias actually lies.}
 	The example uses the \textit{adult}\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Adult}} dataset for training and testing predictive models. Instead of reducing biases in the dataset (pre-processing bias mitigation), the example applies Exponentiated Gradient Reduction technique to reduces biases in the in-processing stage of the machine learning pipeline. It concludes with a comparison on the accuracies and fairness of the models produced with and without the in-processing bias mitigation. The original example has 93 lines of Python code, excluding commented and empty lines, almost three times longer than Listing 1.
 	
-	\textbf{One question to anticipate is "what happens if the user mistypes any of these?" (This also applies to algorithm names, parameters etc.)}
+%	\textbf{One question to anticipate is "what happens if the user mistypes any of these?" (This also applies to algorithm names, parameters etc.)}
+	The model has a name and description, \texttt{Demo} and \texttt{Debiasing using EGR} respectively (lines 3-4). The model has one dataset (line 7) and one bias mitigation (line 15). The dataset is named \texttt{Adult} and is loaded from a csv file, \texttt{load\_preproc\_data\_adult.csv}. We also set \texttt{sex} and \texttt{race} as its protected attributes, \texttt{Income Binary} as the predicted attribute, and split the original dataset to train, test, and validation datasets with ratios 7:3:0 (lines 7-12). 
 	
-	The model has a name and description, \texttt{Demo} and \texttt{Debiasing using EGR} respectively, as well as adding some Python modules to be used in its components (lines 1-5). 
-	The \texttt{modules} feature is for adding additional modules that are not automatically loaded in the generated code. 
-	
-	The model has one dataset and one bias mitigation. The dataset is named \texttt{Adult} and is loaded from a preprocessed adult dataset provided by IBM AI Fairness 360 using \texttt{load\_preproc\_data\_adult} function. We also set \texttt{sex} as its protected attribute and split it to train test, and validation with ratios 7:3:0 (lines 7-12). 
-	
-	Lines 14-32 defines the definition of the bias mitigation executed in the \texttt{Demo} model. The bias mitigation is named \texttt{Exponentiated Gradient Reduction} and use the \texttt{Adult} dataset defined at lines 7-12 as its \texttt{dataset}. 
+	Lines 15-32 defines the definition of the bias mitigation executed in the \texttt{Demo} model. The bias mitigation is named \texttt{Exponentiated Gradient Reduction} and use the \texttt{Adult} dataset defined at lines 7-12 as its \texttt{dataset}. 
 	
 	The bias mitigation uses three different metrics to analyse the trade-off between accuracy and fairness (mean difference, average odds difference) (lines 27-32) when the prediction uses a Logistic Regression classifier only without debiasing (lines 19-21) and when the prediction is debiased using Exponentiated Gradient Reduction (lines 23-25). The former only uses one parameter; \texttt{'lbfgs'} is set as the \texttt{solver}, while the latter has three parameters; the same classifier is used as the \texttt{estimator}, \texttt{'EqualizedOdds'} is used as the \texttt{constraint}, and the protected attributes are not dropped.
 %\textbf{Is indentation correct here? I'd suggest making keys such as name, description, modules etc. keywords in the LaTeX language definition so that they are shown in bold. Comments should be shown with a different font too.}
@@ -524,11 +522,11 @@ fairml:
 
 # set the dataset
 - dataset:
-- name: Adult
-- predictedAttribute: 'Income Binary'
-- protectedAttributes: sex, race
-- trainTestValidationSplit: 7, 3
-- datasetPath: ../data/load_preproc_data_adult.csv
+  - name: Adult
+  - predictedAttribute: Income Binary
+  - protectedAttributes: sex, race
+  - trainTestValidationSplit: 7, 3
+  - datasetPath: load_preproc_data_adult.csv
 
 # define the bias mitigation
 - biasMitigation:
@@ -637,7 +635,7 @@ Measure equal fairness (default: false):
 	\label{sec:generated_files}
 	Based on the model defined in Listing \ref{lst:fairml_model}, FairML generates a Jupyter notebook file containing the code that performs the bias mitigation, an explanation of the bias measured, and references to the selected classifiers and debiasing algorithms to help users understand the applied bias mitigation and metrics measured. It also contains a table and chart that compares the bias metrics measured by different datasets, classifiers, and debiasing algorithms to help users select the best combinations that fit their contexts. 
 	
-	As an example, Figure \ref{fig:table-output} shows the summary table of the bias measurements produced by Listing \ref{lst:fairml_model}. There are three combinations of prediction. In the first combination, we only measure the Mean Difference, a.k.a. Statistical Parity Difference, in the original dataset. After performing prediction using Logistic Regression, the second combination measures some metrics without any bias mitigation. The table shows the mean difference is slightly worsened to -0.206, moving away from 0, advantaging the privileged group (negative sign). After applying the Exponentiated Gradient Reduction as the debiasing algorithm, the prediction accuracy is slightly reduced to 0.79 but with significant improvement in fairness; the Mean Difference and Average Odds Difference are closer to zero than their values prior the bias mitigation.
+	As an example, Figure \ref{fig:table-output} shows the summary table of the bias measurements produced by Listing \ref{lst:fairml_model}. There are three combinations of prediction. In the first combination, we only measure the Mean Difference, a.k.a. Statistical Parity Difference, in the original dataset. After performing prediction using Logistic Regression, the second combination measures some metrics without any bias mitigation. The table shows the mean difference is slightly worsened to -0.206, moving away from 0, advantaging the privileged group (negative sign). After applying the Exponentiated Gradient Reduction as the debiasing algorithm, the prediction accuracy is slightly reduced to 0.79 but with significant improvement in fairness; both Mean Difference and Average Odds Difference are closer to zero than their values prior the bias mitigation.
 	
 	
 	\begin{figure*}
@@ -831,49 +829,49 @@ Measure equal fairness (default: false):
 		%	\end{tabular}
 	%\end{table*}
 	
-	\begin{table*}[]
-		\caption{Comparison of numbers of lines of code between original examples (Original LoC), FairML models (Model LoC), and generated code (Generated LoC) as well as the generation time of FairML and the execution time of the original examples and generated code (seconds). See Table \ref{tab:expressiveness1} 
-			%	and \ref{tab:expressiveness2} 
-			for the titles of the examples on the second column.}
-		\label{tab:evaluation}
-		\begin{tabular}{crrrrrrrrrr}
-			\hline
-			\textbf{Code} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Ori\\ LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model\\ LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen\\ LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model  LoC/\\ Ori  LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Model LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generation\\ Time\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Original\\ Exec Time\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generated\\ Exec Time\end{tabular}}} &
-			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Time\end{tabular}}} \\ \hline
-			E01 & 133 & 41 & 128 & 0.31 & 3.12 & 0.96 & 0.17 & 96.21 & 102.98 & 1.07 \\
-			E02 & 257 & 37 & 170 & 0.14 & 4.59 & 0.66 & 0.17 & 7.93 & 2.33 & 0.29 \\
-			E03 & 50 & 50 & 375 & 1.00 & 7.50 & 7.50 & 0.19 & 20.99 & 20.23 & 0.96 \\
-			E04 & 93 & 33 & 118 & 0.35 & 3.58 & 1.27 & 0.17 & 29.93 & 30.21 & 1.01 \\
-			E05 & 103 & 37 & 91 & 0.36 & 2.46 & 0.88 & 0.16 & 218.05 & 207.78 & 0.95 \\
-			E06 & 95 & 67 & 345 & 0.71 & 5.15 & 3.63 & 0.20 & 12.99 & 14.67 & 1.13 \\
-			E07 & 35 & 30 & 86 & 0.86 & 2.87 & 2.46 & 0.14 & 8.04 & 15.52 & 1.93 \\
-			E08 & 143 & 61 & 146 & 0.43 & 2.39 & 1.02 & 0.16 & 12.97 & 15.57 & 1.20 \\
-			E09 & 212 & 59 & 138 & 0.28 & 2.34 & 0.65 & 0.17 & 1.46 & 4.63 & 3.17 \\
-			E10 & 52 & 55 & 176 & 1.06 & 3.20 & 3.38 & 0.17 & 3.39 & 3.88 & 1.14 \\
-			E11 & 30 & 25 & 85 & 0.83 & 3.40 & 2.83 & 0.17 & 0.02 & 0.08 & 4.59 \\
-			E12 & 356 & 90 & 644 & 0.25 & 7.16 & 1.81 & 0.22 & 34.90 & 54.25 & 1.55 \\
-			%		E13 & 54  &    &     &      &      &      &       &        &        &      \\
-			%		E14 & 54  &    &     &      &      &      &       &        &        &      \\
-			%		E15 & 54  &    &     &      &      &      &       &        &        &      \\
-			%		E16 & 54  &    &     &      &      &      &       &        &        &      \\
-			%		E17 & 54  &    &     &      &      &      &       &        &        &      \\
-			%		E18 & 52  &    &     &      &      &      &       &        &        &      \\
-			%		E19 & 64  &    &     &      &      &      &       &        &        &      \\
-			%		E20 & 66  &    &     &      &      &      &       &        &        &      \\
-			%		E21 & 82  &    &     &      &      &      &       &        &        &      \\ 
-			\hline
-		\end{tabular}
-	\end{table*}
-	
+%	\begin{table*}[]
+%		\caption{Comparison of numbers of lines of code between original examples (Original LoC), FairML models (Model LoC), and generated code (Generated LoC) as well as the generation time of FairML and the execution time of the original examples and generated code (seconds). See Table \ref{tab:expressiveness1} 
+%			%	and \ref{tab:expressiveness2} 
+%			for the titles of the examples on the second column.}
+%		\label{tab:evaluation}
+%		\begin{tabular}{crrrrrrrrrr}
+%			\hline
+%			\textbf{Code} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Ori\\ LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model\\ LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen\\ LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model  LoC/\\ Ori  LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Model LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generation\\ Time\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Original\\ Exec Time\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generated\\ Exec Time\end{tabular}}} &
+%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Time\end{tabular}}} \\ \hline
+%			E01 & 133 & 41 & 128 & 0.31 & 3.12 & 0.96 & 0.17 & 96.21 & 102.98 & 1.07 \\
+%			E02 & 257 & 37 & 170 & 0.14 & 4.59 & 0.66 & 0.17 & 7.93 & 2.33 & 0.29 \\
+%			E03 & 50 & 50 & 375 & 1.00 & 7.50 & 7.50 & 0.19 & 20.99 & 20.23 & 0.96 \\
+%			E04 & 93 & 33 & 118 & 0.35 & 3.58 & 1.27 & 0.17 & 29.93 & 30.21 & 1.01 \\
+%			E05 & 103 & 37 & 91 & 0.36 & 2.46 & 0.88 & 0.16 & 218.05 & 207.78 & 0.95 \\
+%			E06 & 95 & 67 & 345 & 0.71 & 5.15 & 3.63 & 0.20 & 12.99 & 14.67 & 1.13 \\
+%			E07 & 35 & 30 & 86 & 0.86 & 2.87 & 2.46 & 0.14 & 8.04 & 15.52 & 1.93 \\
+%			E08 & 143 & 61 & 146 & 0.43 & 2.39 & 1.02 & 0.16 & 12.97 & 15.57 & 1.20 \\
+%			E09 & 212 & 59 & 138 & 0.28 & 2.34 & 0.65 & 0.17 & 1.46 & 4.63 & 3.17 \\
+%			E10 & 52 & 55 & 176 & 1.06 & 3.20 & 3.38 & 0.17 & 3.39 & 3.88 & 1.14 \\
+%			E11 & 30 & 25 & 85 & 0.83 & 3.40 & 2.83 & 0.17 & 0.02 & 0.08 & 4.59 \\
+%			E12 & 356 & 90 & 644 & 0.25 & 7.16 & 1.81 & 0.22 & 34.90 & 54.25 & 1.55 \\
+%			%		E13 & 54  &    &     &      &      &      &       &        &        &      \\
+%			%		E14 & 54  &    &     &      &      &      &       &        &        &      \\
+%			%		E15 & 54  &    &     &      &      &      &       &        &        &      \\
+%			%		E16 & 54  &    &     &      &      &      &       &        &        &      \\
+%			%		E17 & 54  &    &     &      &      &      &       &        &        &      \\
+%			%		E18 & 52  &    &     &      &      &      &       &        &        &      \\
+%			%		E19 & 64  &    &     &      &      &      &       &        &        &      \\
+%			%		E20 & 66  &    &     &      &      &      &       &        &        &      \\
+%			%		E21 & 82  &    &     &      &      &      &       &        &        &      \\ 
+%			\hline
+%		\end{tabular}
+%	\end{table*}
+%	
 	\section{Evaluation}
 	\label{sec:evaluation}
 	We have evaluated the expressiveness, correctness, productivity, and execution time of FairML. For expressiveness evaluation, we aimed to answer this question, 
@@ -896,6 +894,30 @@ Measure equal fairness (default: false):
 	the number of lines written by users is significantly reduced. In the measurement whitespace and commented lines were not counted.
 	
 	We also measured the execution time of FairML. First, we measured the \textit{generation time} -- the time that FairML takes to generate the bias detection and mitigation code. Second, we compared the time taken by the generated target code against the example code to complete their operations (\textit{generated execution time} vs. \textit{original execution time}). The evaluation was performed on a machine with Windows 10 64-bit operating system, 11th Gen Intel(R) Core(TM) i9-11900H @ 2.50GHz 8-core processors, 32.0 GB RAM DDR4, OpenJDK Runtime Environment 18.9 (build 11.0.14.1+1), and Python 3.9.7.
+	
+		\begin{figure*}
+		\centering
+		\begin{subfigure}{0.33\textwidth}
+			\includegraphics[width=\textwidth]{figures/eval-productivity.pdf}
+			\caption{original vs. model lines of code}
+			\label{fig:eval-productivity}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.33\textwidth}
+			\includegraphics[width=\textwidth]{figures/eval-generation-time.pdf}
+			\caption{generation time vs. lines of code}
+			\label{fig:eval-generation-time}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}{0.33\textwidth}
+			\includegraphics[width=\textwidth]{figures/eval-execution-time.pdf}
+			\caption{original vs. generated code's execution time}
+			\label{fig:eval-execution-time}
+		\end{subfigure}
+			\caption{The evaluation of FairML on productivity, generation time, and execution time.}
+		\label{fig:evaluation}
+	\end{figure*}
+
 	
 	\subsection{Results and Discussion}
 	\label{sec:result_and_discussion}
@@ -931,26 +953,24 @@ Measure equal fairness (default: false):
 	\subsubsection{Productivity}
 	\label{sec:productivity}
 	
-	Table \ref{tab:evaluation} shows a comparison of the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that \textsf{Model LoC}/\textsf{Original LoC} are equal to or less than 1, indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases. This can been seen at the examples \textsf{E11} and \textsf{E12}, where LoC goes up from 30 to 356, that the efficiency is also increased with users only need to write from 83\% to 25\% of the LoC in their respective original examples.
+	Figure \ref{fig:eval-productivity} shows a comparison of the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that model LoC (solid line) tends to be less than original LoC (dashed line), indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases.  From examples \textsf{E11} (leftmost) to \textsf{E12} (rightmost), where original LoC goes up from 30 to 356, we can notice the pattern that the efficiency is also increased with users only need to write from 83\% to 25\% of the LoC in their respective original eamples.
 	
-	We do expect that FairML generates more LoC than the original examples as they contain features that are not included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) the code for displaying summary tables and charts. 
+	We do expect that FairML generates more LoC (dotted line) than the original examples as they contain features that are not included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) different approach in displaying measurement results in the forms of summary tables and charts. 
 	
 	%We admit that there are also generated lines of code that are not always necessary for every scenario but always exist in the code -- this also increases the number of generated LoC.For example,   
 	
 	
 	
-	\subsubsection{Execution Time}
+	\subsubsection{Generation and Execution Time}
 	\label{sec:execution_time}
 	
-	Table \ref{tab:evaluation} shows the duration -- generation time -- taken by FairML to produce generated code, 
-	and the performance of the generated code on execution time against the original examples (in seconds). 
-	In the generation time, 
+	Figure \ref{fig:eval-generation-time} shows the duration -- generation time -- taken by FairML to produce generated code. 	
+	In terms of generation time, 
 	FairML can generate every generated-code version of the original examples in less that 0.2 seconds, 
-	and it can achieve the rate 2,798 lines/second based on the example E16 
-	(554 lines/0.198 seconds, Table \ref{tab:evaluation}). 
+	and it can achieve the rate 2,927 lines/second (644 lines/0.22 seconds) based on the example E12. 
 	
-	In general, the execution time of the generated code takes more time than the original examples. 
-	We do anticipate this as the generated-code versions have more features, having more lines of code,
+	Figure \ref{fig:eval-execution-time} shows the performance of the generated code on execution time against the original examples (in seconds). In general, the execution time of the generated code (solid line) takes slightly more time than the original examples (dotted line). 
+	We do anticipate this as the generated-code versions have more features -- having more lines of code --
 	as stated in Section \ref{sec:productivity}. 
 	
 	\subsection{Threats to Validity}

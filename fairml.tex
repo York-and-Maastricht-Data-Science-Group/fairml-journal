@@ -297,24 +297,24 @@
 	
 	In 2016, COMPASS, an algorithm for predicting recidivism, was found to produce a high false-negative rate for white people and a high false-positive rate for black people \cite{angwin2016machine}. Some commercial face recognition services were also found to have significantly lower accuracy on darker-skin females \cite{buolamwini2018gender}. Moreover, A jobs platform was found to rank qualified female candidates far lower than qualified male candidates even though they have similar properties \cite{lahoti2019ifair}. These are some instances that show how biases in machine learning can promote unfairness. 
 	
-	Some approaches have contributed to the mitigation of such biases by providing bias metrics and debiasing algorithms (more in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation}). 
+	Some approaches have contributed to the mitigation of such biases by providing bias metrics and de-biasing algorithms (more in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation}). 
 	Different toolkits have implemented these metrics and algorithms.
 	However, they come with different methodological approaches and capabilities, which demand users to understand them in depth before they can decide which toolkits are best for specific scenarios~\cite{lee2021landscape}.  
 	
-	Data scientists usually work using their intuitions to narrow down the number of combinations of algorithms, parameters, and other factors to find the best models for given goals, datasets, and domains \cite{muller2016introduction}. After that, with lots of experimentation and trial and error \cite{byrne2017development}, they have to go through all the narrowed combinations and test the produced models to identify which models are the best. Moreover, regardless of the availability of machine learning libraries, data scientists have to craft the search process from scratch in general/statistical programming languages (e.g, Python, R).
+	Data scientists usually work using their intuitions to narrow down the number of combinations of algorithms, parameters, and other factors to find the best models for given goals, datasets, and domains \cite{muller2016introduction}. After that, with lots of experimentation and trial and error \cite{byrne2017development}, they have to go through all the narrowed combinations and test the produced models to identify which models are the best. Moreover, regardless of the availability of machine learning libraries, data scientists have to craft the search process from scratch in general/statistical programming languages (e.g., Python, R).
 	
 	Model-Driven Sofware Development (MDSE) leverages the abstraction of software development by hiding technical details of implementations that can be automated \cite{brambilla2017model}. Thus, users can focus on essential aspects through the use of simpler modelling languages, and the target implementation can be automatically generated, which in turn improves productivity \cite{volter2013model}. The use of MDSE would benefit data scientists since it allows them to search for the best bias mitigation methods for given cases at a higher abstraction level. They also do not have to code the implementation of the search process in general/statistical programming languages since it can be automatically generated and then fine-tuned later on. 
 	
-	In this paper we introduce FairML\footnote{FairML's prototype can be found at \url{https://github.com/York-and-Maastricht-Data-Science-Group/fairml}}, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
+	In this paper, we introduce FairML\footnote{FairML's prototype can be found at \url{https://github.com/York-and-Maastricht-Data-Science-Group/fairml}}, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
 	\begin{enumerate}
 		\item FairML raises the abstraction of bias measurement and mitigation so that users can configure their bias mitigation model in YAML (YAML Ain't Markup Language), a human-friendly declarative language \cite{evans2017yaml}, without having to code in general/statistical programming languages.
 		\item FairML supports a certain degree of expressiveness, allowing users to experiment with different kinds of bias metrics, bias mitigation algorithms, datasets, classifiers, and their parameters to find the best combinations that reduce biases but with acceptable accuracy.
 		\item Supporting tooling automatically generates Python and Jupyter Notebook files which users can execute to measure and mitigate biases on given datasets. All generated files are modifiable and extensible for fine-tuning and further development.
 	\end{enumerate}
 	
-	This paper is structured as follows. First, we discuss fairness in machine learning in Section \ref{sec:bias_in_machine_learning}. The section covers the definitions of some related terms, real examples, bias metrics, and bias mitigation. In Section \ref{sec:model_based_bias_mitigation}, we present an overview of our development as well as our approach to implementing de-biasing techniques in machine learning field to automate bias mitigation. 
+	This paper is structured as follows. First, we discuss fairness in machine learning in Section \ref{sec:bias_in_machine_learning}. The section covers the definitions of some related terms, real examples, bias metrics, and bias mitigation. In Section \ref{sec:model_based_bias_mitigation}, we present an overview of our development as well as our approach to implementing de-biasing techniques in the machine learning field to automate bias mitigation. 
 	%Section \ref{sec:example} 
-	The section also presents how users use an existing toolkit in expressing a solution to mitigate bias in classification. We also demonstrate how FairML represents the solution in more readable and concise way and can automatically produce bias measurement and mitigation code with similar correctness as the manually-crafted solutions.
+	The section also presents how users use an existing toolkit in expressing a solution to mitigate bias in classification. We also demonstrate how FairML represents the solution in a more readable and concise way and can automatically produce bias measurement and mitigation code with similar correctness as the manually-crafted solutions.
 	In section \ref{sec:evaluation}, we evaluate FairML on expressiveness, correctness, generation time, and execution time using the existing code of a bias mitigation toolkit as the benchmark. Section \ref{sec:result_and_discussion} presents and discusses the result of the evaluation. 
 	We also reflect on some lessons we learned during the research and development of FairML in Section \ref{sec:lessons_learned}. 
 	Section \ref{sec:related_work} discusses related work, and, Section \ref{sec:conclusions_and_future_work} presents the conclusions and future work of this research.
@@ -339,7 +339,7 @@
 		\caption{The decision tree to automatically select the most appropriate bias metrics for particular situations.}
 		\label{fig:wizard-metric}
 	\end{figure*}
-
+	
 	\subsection{Bias Metrics}
 	\label{sec:bias_metrics}	
 	Some metrics have been developed to detect and measure biases in machine learning. Each metric has its way of calculating biases and therefore is preferable to others in particular situations. IBM AI Fairness 360 \cite{mahoney2020ai,ibmaif3602022guidance} and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}} have provided guidances for the selection, and they are summarised in Figure \ref{fig:wizard-metric}. So, if a bias measurement requires metrics that encompass group and individual fairness, then Theil Index \cite{conceicao2000theyoung,bellamy2018ai} and Generalised Entropy Index \cite{speicher2018unified} are preferable. They can be used as a unified metric to measure the inequality in benefit allocation for groups and individuals \cite{ibmaif3602022guidance,mahoney2020ai}. Lower scores reflect strong fairness, while the higher ones show the opposite. Perfect fairness is indicated by a value of 0 \cite{lale2022doc}. 
@@ -375,7 +375,7 @@
 	\end{equation}
 	The true-positive rate is the ratio of true positives to the total number of all positive outcomes ($TPR=TP/P$) for a given group. The ideal value is 0, and a negative value indicates a higher preference for the privileged group while a positive one is the opposite \cite{ibmaif3602022doc,bellamy2018ai}. Other metrics in this space are False Negative Rate Ratio and Difference, False Omission Rate Ratio and Difference, Error Rate, False Positive Rate Ratio and Difference, and False Discovery Rate Ratio and Difference \cite{mahoney2020ai,ibmaif3602022guidance}.
 	
-
+	
 	\begin{figure*}
 		\includegraphics[width=\linewidth]{figures/wizard-debiasing}
 		\caption{The decision tree to select the most appropriate debiasing algorithms for particular situations.}
@@ -385,22 +385,22 @@
 	\subsection{Bias Mitigation}
 	\label{sec:bias_mitigation}
 	
-	Debiasing algorithms have been developed to reduce biases in machine learning, and they can be categorised based on the stages where they are applied in machine learning pipelines: pre-processing, in-processing, and post-processing. The work in  \cite{mahoney2020ai,ibmaif3602022guidance} provides guidances for choosing the most appropriate debiasing algorithms for specific situations. They guidances are summarised in Figure \ref{fig:wizard-debiasing}.
+	Debiasing algorithms have been developed to reduce biases in machine learning, and they can be categorised based on the stages where they are applied in machine learning pipelines: pre-processing, in-processing, and post-processing. The work in  \cite{mahoney2020ai,ibmaif3602022guidance} provides guidance for choosing the most appropriate de-biasing algorithms for specific situations. The guidance is summarised in Figure \ref{fig:wizard-debiasing}.
 	
-	Reference \cite{mahoney2020ai} recommends to mitigate unfairness as early as possible particularly in the pre-processing stage since biases that are reduced in that stage are intrinsic in datasets. Unfortunately, there are conditions where altering datasets is prohibited. So, if modifying datasets is not allowed, Reweighing \cite{kamiran2011reweighing} can be an option since it does not alter the values of features but works by altering only the weight of each label/prediction to gain fairness. If modifying datasets is allowed, Optimized Preprocessing \cite{calmon2017optimized}, Disparate Impact Remover \cite{feldman2015disparate}, and Learning Fair Representation (LFR) \cite{zemel2013lfr} can be suitable options except that LFR does not provide transparency since it encodes data into a latent space, and therefore the first two are preferable when transparency of dataset transformation is required.
-	Optimized Preprocessing learns a probabilistic transformation that modifies the labels and features of a dataset but with objectives and constraints on individual distortion, data fidelity, and group fairness \cite{mahoney2020ai,calmon2017optimized}.
+	Reference \cite{mahoney2020ai} recommends mitigating unfairness as early as possible, particularly in the pre-processing stage, since biases that are reduced in that stage are intrinsic in datasets. Unfortunately, there are conditions where altering datasets is prohibited. So, if modifying datasets is not allowed, Reweighing \cite{kamiran2011reweighing} can be an option since it does not alter the values of features but works by altering only the weight of each label/prediction to gain fairness. If modifying datasets is allowed, Optimised Preprocessing \cite{calmon2017optimized}, Disparate Impact Remover \cite{feldman2015disparate}, and Learning Fair Representation (LFR) \cite{zemel2013lfr} can be suitable options except that LFR does not provide transparency since it encodes data into a latent space, and therefore the first two are preferable when transparency of dataset transformation is required.
+	Optimized Preprocessing learns a probabilistic transformation that modifies the labels and features of a dataset, but with objectives and constraints on individual distortion, data fidelity, and group fairness \cite{mahoney2020ai,calmon2017optimized}.
 	Disparate Impact Remover alters the values of features to increase the fairness of groups while preserving rank-ordering within groups \cite{mahoney2020ai,feldman2015disparate}.
 	LFR pre-processes a dataset by encoding data into a latent space and obfuscates the values of protected attributes \cite{mahoney2020ai,zemel2013lfr}.
 	
-	Bias mitigation can also be applied in inprocessing by interfering training algorithms. The debiasing algorithms applied in processing mainly work by penalising biases, usually using fairness constrains or objectives that limit or regularise biases in classifiers \cite{mahoney2020ai}. For instance, Prejudice Remover \cite{kamishima2012prejudice} adds a discrimination-aware regularization term to the learning objective. However, it is limited only to the learning algorithms that support for regularisation terms \cite{mahoney2020ai,ibmaif3602022guidance}. Because of the limitation, users can consider other inprocessing algorithms that allow for a more general set of learning algorithms, such as Adversarial Debiasing \cite{mahoney2020ai,ibmaif3602022guidance}. Adversarial Debiasing \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while also lowering an adversary's ability to determine the protected attribute from the predictions. This approach makes the predictions unable to carry any group discrimination information that the adversary can exploit and therefore leads to a fair classifier \cite{ibmaif3602022guidance}. Other inprocessing debiasing algorithms are Meta Fair Classification \cite{celis2019metafair}, Gerryfair Classification \cite{kearns2018gerry,kearns2019gerry}, Exponentiated Gradient Reduction \cite{agarwal18grid}, and Grid Search Reduction \cite{agarwal18grid,agarwal19grid}.
+	Bias mitigation can also be applied in in-processing by interfering with training algorithms. The de-biasing algorithms applied in processing mainly work by penalising biases, usually using fairness constraints or objectives that limit or regularise biases in classifiers \cite{mahoney2020ai}. For instance, Prejudice Remover \cite{kamishima2012prejudice} adds a discrimination-aware regularisation term to the learning objective. However, it is limited only to the learning algorithms that support regularisation terms \cite{mahoney2020ai,ibmaif3602022guidance}. Because of the limitation, users can consider other in-processing algorithms that allow for a more general set of learning algorithms, such as Adversarial Debiasing \cite{mahoney2020ai,ibmaif3602022guidance}. Adversarial Debiasing \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while also lowering an adversary's ability to determine the protected attribute from the predictions. This approach makes the predictions unable to carry any group discrimination information that the adversary can exploit and therefore leads to a fair classifier \cite{ibmaif3602022guidance}. Other in-processing debiasing algorithms are Meta Fair Classification \cite{celis2019metafair}, Gerryfair Classification \cite{kearns2018gerry,kearns2019gerry}, Exponentiated Gradient Reduction \cite{agarwal18grid}, and Grid Search Reduction \cite{agarwal18grid,agarwal19grid}.
 	
 	%\textbf{Meta Fair Classification} \cite{celis2019metafair} takes the fairness metric as part of the input and returns a classifier optimised with respect to that fairness metric.
-	%\textbf{Grid Search Reduction} \cite{agarwal18grid,agarwal19grid} is an in-processing technique that can be used for fair classification or fair regression. For classification it reduces fair classification to a sequence of cost-sensitive classification problems, returning the deterministic classifier with the lowest empirical error subject to fair classification constraints among the candidates searched. For regression it uses the same priniciple to return a deterministic regressor with the lowest empirical error subject to the constraint of bounded group loss.
-	%\textbf{Gerryfair Classification} \cite{kearns2018gerry,kearns2019gerry} is an algorithm for learning classifiers that are fair with respect to rich subgroups. Rich subgroups are defined by (linear) functions over the sensitive attributes, and fairness notions are statistical: false positive, false negative, and statistical parity rates. This implementation uses a max of two regressions as a cost-sensitive classification oracle, and supports linear regression, support vector machines, decision trees, and kernel regression. 
+	%\textbf{Grid Search Reduction} \cite{agarwal18grid,agarwal19grid} is an in-processing technique that can be used for fair classification or fair regression. For classification, it reduces fair classification to a sequence of cost-sensitive classification problems, returning the deterministic classifier with the lowest empirical error subject to fair classification constraints among the candidates searched. For regression, it uses the same principle to return a deterministic regressor with the lowest empirical error subject to the constraint of bounded group loss.
+	%\textbf{Gerryfair Classification} \cite{kearns2018gerry,kearns2019gerry} is an algorithm for learning classifiers that are fair with respect to rich subgroups. Rich subgroups are defined by (linear) functions over the sensitive attributes, and fairness notions are statistical: false positive, false negative, and statistical parity rates. This implementation uses a max of two regressions as a cost-sensitive classification oracle and supports linear regression, support vector machines, decision trees, and kernel regression. 
 	%\textbf{Exponentiated Gradient Reduction} \cite{agarwal18grid} reduces fair classification to a sequence of cost-sensitive classification problems, returning a randomised classifier with the lowest empirical error subject to fair classification constraints.
 	%\textbf{Prejudice Remover} \cite{kamishima2012prejudice} adds a discrimination-aware regularization term to the learning objective.
-	%\textbf{Adversarial Debiasing} \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while simultaneously reduces an adversary's ability to determine the protected attribute from the predictions. This approach leads to a fair classifier as the predictions cannot carry any group discrimination information that the adversary can exploit.
-	%Among in-processing algorithms, the prejudice remover is limited to learning algorithms that allow for regularisation terms whereas the adversarial debiasing algorithm allows for a more general set of learning algorithms, and may be preferred for that reason.
+	%\textbf{Adversarial Debiasing} \cite{zhang2018adversarial} learns a classifier to maximise its prediction accuracy while simultaneously reducing an adversary's ability to determine the protected attribute from the predictions. This approach leads to a fair classifier as the predictions cannot carry any group discrimination information that the adversary can exploit.
+	%Among in-processing algorithms, the prejudice remover is limited to learning algorithms that allow for regularisation terms, whereas the adversarial de-biasing algorithm allows for a more general set of learning algorithms and may be preferred for that reason.
 	
 	
 	%Adversarial Debiasing,   Exponentiated Gradient Reduction, 
@@ -408,112 +408,112 @@
 	%Grid Search Reduction, Prejudice Remover, 
 	
 	%Further Considerations
-	%Among pre-processing algorithms, reweighing only changes weights applied to training samples; it does not change any feature or label values. Therefore, it may be a preferred option if the application does not allow for value changes. Disparate impact remover and optimised pre-processing yield modified datasets in the same space as the input training data, whereas LFR's pre-processed dataset is in a latent space. If the application requires transparency on the transformation, then disparate impact remover and optimised pre-processing may be preferred options. Moreover, optimised pre-processing addresses both group fairness and individual fairness.
+	%Among pre-processing algorithms, reweighing changes only weights applied to training samples; it does not change any feature or label values. Therefore, it may be a preferred option if the application does not allow for value changes. Disparate impact remover and optimised pre-processing yield modified datasets in the same space as the input training data, whereas LFR's pre-processed dataset is in a latent space. If the application requires transparency on the transformation, then disparate impact remover and optimised pre-processing may be preferred options. Moreover, optimised pre-processing addresses both group fairness and individual fairness.
 	%
 	
 	
 	%The current AIF360 implementations of some algorithms take arguments on which fairness metric to optimise (e.g. optimised pre-processing and reject option), and some do not (e.g. disparate impact remover and equalised odds post-processing) may imply better and worse performance by some algorithms for some metrics. Improving one fairness on other fairness metrics is complicated [7].
 	
 	Post-processing bias mitigation can only be performed if the result of a prediction can be changed. Reject Option Classification \cite{kamiran2012reject} favours outcomes to unprivileged groups and does the opposite to privileged groups in a confidence band around the decision boundary with the highest uncertainty.
-	{Equalised Odds Postprocessing \cite{hardt2016equal,pleiss2017equal} and Calibrated Equalised Odds Postprocessing \cite{pleiss2017equal} try to find to find probabilities with which to change output labels to optimise equalized odds objectives. The former achieves it by solving linear programs while the latter optimises over calibrated classifier scores. The two equalised odds algorithms have a randomised component, and both can be preferred because of that characteristic. Otherwise, the reject option algorithm is the alternative option since it is deterministic.
-	
-	\section{Model-based Bias Mitigation}
-	\label{sec:model_based_bias_mitigation}
-	
-	This section presents our approach to delivering model-based bias mitigation in machine learning. 
-	
-	%\begin{table*}[]
-	%	\centering
-	%	\caption{Toolkits for bias mitigation in machine learning.}
-	%	\label{tab:bias-mitigation-toolkits}
-	%	\begin{tabular}{p{.15\textwidth}p{.39\textwidth}p{.39\textwidth}}
-		%		\hline
-		%		\multicolumn{1}{c}{\textbf{Toolkit}}                                   & \multicolumn{1}{c}{\textbf{Website}}                                                                                                  & \multicolumn{1}{c}{\textbf{Repository}}                                                                                     \\ \hline
-		%		Fairlearn                                                              & \url{https://fairlearn.org}                                                                                                                 & \url{https://github.com/fairlearn/fairlearn}                                                                                      \\
-		%		Google What-If                                                         & \url{https://pair-code.github.io/what-if-tool}                                                                                              & \url{https://github.com/pair-code/what-if-tool}                                                                                   \\
-		%		Scikit-fairness, Scikit-lego & \url{https://scikit-fairness.netlify.app}, \url{https://scikit-lego.readthedocs.io/en/latest/index.html} & \url{https://github.com/koaning/scikit-fairness},  \url{https://github.com/koaning/scikit-lego} \\
-		%		IBM AI Fairness 360                                                    & \url{https://aif360.mybluemix.net}                                                                                                          & \url{https://github.com/Trusted-AI/AIF360}                                                                                        \\ \hline
-		%	\end{tabular}
-	%\end{table*}
-	
-	\subsection{Toolkit Selection}
-	\label{sec:toolkit_selection}
-	MDSE relies heavily on code generation to produce the code of target software. The generated code often uses existing tools or software libraries to implement certain functions in the respective domains. Machine learning is no exception;
-	there are existing toolkits designed to reduce ethical biases in machine learning that can be leveraged. 
-	
-	Lee et al. \cite{lee2021landscape} analysed the landscape of open-source toolkits in algorithmic ethics, particularly for fair machine learning. With criteria that the toolkit 1) should be open source, 2) is likely to be used by practitioners, and 3) is implementing fairness-related methodology and through a focus group discussion of data scientists, they selected the six best toolkits for fair machine learning and used them further in their analysis. The toolkits are Aequitas\cite{saleiro2019aequitas}, Google What-If \cite{googlewhatif2020}, Scikit-fairnet/scikit-lego \cite{scikitfairness2022,scikitlego2022}, Fairlearn\cite{bird2020fairlearn}, and IBM AI Fairness 360 \cite{bellamy2018ai}.  
-	
-	W evaluated these six toolkits to assess their suitability as an infrastructure for our model-based approach. The main criteria for the selection were 1) it should be open source, 2) it should support bias mitigation, 3) it provides Application Programming Interface (API) to be programmable and integrated into the model-based approach, and 4) it supports various bias measurements and mitigation algorithms to enable users to find the best bias mitigation strategies. 
-	
-	All the toolkits meet the first criterion since they are all open-source projects. We excluded Aequitas due to its inability to perform bias mitigation (second criterion); it only supports bias measurement. We also removed Google What-If since it does not have an API\footnote{\url{https://groups.google.com/g/what-if-tool/c/zw4Rk5kxPIM}} to be integrated with other applications (third criterion); its customisation is limited to custom prediction function\footnote{\url{https://pair-code.github.io/what-if-tool/get-started/}}. IBM AI Fairness 360 has more features than the rest. It claims it offers at least ten state-of-the-art bias mitigation algorithms and 77 bias metrics\footnote{\url{https://aif360.mybluemix.net/}} while Fairlearn and Scikit-fairness/lego come second and third \cite{lee2021landscape}. All of them meet the fourth criterion. However, since IBM AI Fairness 360 has more features than the rest, we selected it as the infrastructure for our model-based solution.
-	
-	%Nevertheless, we refer to Fairlearn and Scikit-fairness/lego's code repositories and documentations to understand how bias mitigation was implemented. 
-	
-	%They also identified a lack of consistency between the toolkits in their methodological approaches, and therefore users need to understand them at first before they can use the toolkits properly to meet goals.
-	
-	\subsection{Constructs and Workflow}
-	\label{sec:constructs_and_workflow}
-	
-	To model bias mitigation in machine learning, a Domain-Specific Language should be able to allow users to express the essential constructs and workflows in the domain \cite{volter2013model}. The work in \cite{bellamy2018ai} has documented the important constructs and typical workflows/pipelines in implementing bias mitigation using the IBM AI Fairness 360 toolkit, and we discuss them briefly here.
-	
-	%% Therefore, we opted for document analysis as documents contain information to understand the objects of interest \cite{bowen2009document}. As showcases, Poncin et al. \cite{poncin2011process}, and Rogers et al. \cite{rogers2015using} analysed code repositories and existing documentation to understand software development and maintenance processes. Thus, we analyse the code repository and documentation of IBM AI Fairness 360 to understand its uses and implementation in mitigating bias as they reflect bias mitigation in practice. Our domain analysis aimed to identify essential constructs and workflows in the toolkit's examples, demos, and tutorials. The important constructs are crucial for abstraction so that users only deal with them when constructing models and therefore reduce complexity. Workflow is essential to understand the order in defining and executing the construct.
-	%
-	%%\begin{figure}
-	%%	\includegraphics[width=\linewidth]{figures/workflow}
-	%%	\caption{The workflow of bias mitigation commonly performed using the toolkits in Section \ref{sec:toolkits}.}
-	%%	\label{fig:workflow}
-	%%\end{figure}
-	%
-	
-	\textbf{Set Up Datasets (T01)}. Bias mitigation commonly starts with \textit{datasets} setup. In this task, users define the \textit{source} of every dataset which is commonly a \textit{CSV file}. They also determine which attribute is the \textit{predicted attribute}, including the \textit{favourable class} in the attribute, and the \textit{sensitive attributes} as well as their \textit{privileged} and \textit{unprivileged classes}. The datasets can also be loaded from the \textit{built-in datasets} provided by certain toolkits. 
-	The \textit{training}, \textit{validation}, and \textit{test datasets} are also set here, whether they are all come from different datasets or the same dataset but is \textit{split} in different ratios. They also select the \textit{bias metrics} and \textit{mitigation algorithms} that will be applied to datasets, \textit{models}, and \textit{prediction}. 
-	
-	\textbf{Measure Original Biases Prior to Prediction (T02)}. In this task, users measure the \textit{original biases} of the datasets in different metrics, such as accuracy, mean difference, etc. The results are later used as benchmarks when compared with the measurement results after prediction (T04) or bias mitigation (T06).  
-	
-	\textbf{Train and Predict (T03)}. This task \textit{trains} \textit{models} commonly using certain \textit{classifiers}/\textit{classification algorithms} on the train datasets defined in Task T01. If required, the training can extend to \textit{validation} to tune hyper-parameters in order to obtain the best \textit{parameters} for the models. After that, users use the models to \textit{predict} on the test datasets defined in Task T01. This task can be skipped if a prediction is not required. For example, we want to measure and mitigate biases only in the original datasets (pre-processing).
-	
-	\textbf{Measure Original Biases Post Prediction (T04)}. In this task, users measure the original accuracies and biases after performing the prediction in Task T03. The results are used as benchmarks later when comparing them against biases after bias mitigation. This action is skipped if prediction or Task T03 is not performed.
-	
-	\textbf{Mitigate Bias (T05)}. In this task, users choose the type of debiasing algorithms -- pre-processing, in-processing, or post-processing -- they want to apply. \textit{Validation} can also be performed if hyper-parameter tuning is required to obtain the best parameters for the debiasing algorithms.
-	%\begin{itemize}
-	%	\item[a.] \textbf{Pre-processing}. Before model training and prediction, users apply debiasing algorithms to the (copies of) original datasets.
-	%	\item[b.] \textbf{In-processing}. Users apply debiasing algorithms to regulate the training process to become fairer for protected groups when predicting.
-	%	\item[c.] \textbf{Post-processing}. Users apply debiasing algorithms to the prediction results to make them fairer for protected groups. 
-	%\end{itemize}
-	
-	\textbf{Measure Biases After Debiasing (T06)}. In this task, users measure accuracies and biases after applying debiasing algorithms in Task T05 using the test datasets. 
-	
-	\textbf{Conclude (T07)}. In this task, the biases after debiasing are compared against the original biases obtained in Tasks T02 and T04. Users then analyse the results to find the best combinations of datasets, classifiers, and debiasing algorithms with biases and accuracy that fit their purposes. The comparisons can be presented in numbers, tables, and charts to facilitate users to analyse the effects of the datasets, classifiers, and debiasing algorithms. 
-	
-	\subsection{Metamodel}
-	\label{sec:metamodel}
-	
-	\begin{figure}
-		\includegraphics[width=\linewidth]{figures/metamodel}
-		\caption{The Metamodel of FairML.}
-		\label{fig:metamodel}
-	\end{figure}
-	
-	The constructs identified above have been incorportated into into FairML's metamodel so that users can express them when defining their bias mitigation experiments. Figure \ref{fig:metamodel} shows a simplified version of the metamodel. The \texttt{FairML} class represents a project of bias mitigation in machine learning. It can contain one or more datasets and bias mitigations. 
-	
-	The \texttt{Dataset} class defines the datasets. In the class, we specify a dataset's name, predicted attribute, protected attributes, the split ratio between train, test, and validation, and the path of its CSV file.
-	
-	The \texttt{BiasMitigation} class specifies the bias mitigations to be executed in the FairML project. The \textit{name} attribute is used as the identifier of bias mitigations. The class contains three other significant classes: \texttt{TrainingMethod}, \texttt{MitigationMethod}, and \texttt{BiasMetric}. All of them are derived from the \texttt{\textit{Operation}} abstract class since they can be executed, have parameters, and return results. The attributes \textit{name} and \textit{parameters} are used as the identifiers and to define the parameters of operations respectively. The \texttt{algorithm} attribute of the \texttt{Operation} class defines the selected algorithms executed by each deriving class. The \texttt{TrainingMethod} class is responsible to define the classifiers for training and prediction, while the \texttt{MitigationMethod} class specifies the debiasing algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure fairness. 
-	
-	\subsection{FairML Example}
-	\label{sec:fairml_example}	
-	Listing \ref{lst:fairml_model} shows a FairML model, that conforms to the metamodel in Figure\ref{fig:metamodel}, expressed in YAML, and is the FairML version of an IBM AI Fairness 360's example demo\footnote{\url{https://github.com/Trusted-AI/AIF360/blob/master/examples/demo_exponentiated_gradient_reduction.ipynb.}}. 	
-%	\textbf{We need to explain what the dataset is, what we're trying to predict and where the bias actually lies.}
-	The example uses the \textit{adult}\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Adult}} dataset for training and testing predictive models. Instead of reducing biases in the dataset (pre-processing bias mitigation), the example applies Exponentiated Gradient Reduction technique to reduces biases in the in-processing stage of the machine learning pipeline. It concludes with a comparison on the accuracies and fairness of the models produced with and without the in-processing bias mitigation. The original example has 93 lines of Python code, excluding commented and empty lines, almost three times longer than Listing 1.
-	
-%	\textbf{One question to anticipate is "what happens if the user mistypes any of these?" (This also applies to algorithm names, parameters etc.)}
-	The model has a name and description, \texttt{Demo} and \texttt{Debiasing using EGR} respectively (lines 3-4). The model has one dataset (line 7) and one bias mitigation (line 15). The dataset is named \texttt{Adult} and is loaded from a csv file, \texttt{load\_preproc\_data\_adult.csv}. We also set \texttt{sex} and \texttt{race} as its protected attributes, \texttt{Income Binary} as the predicted attribute, and split the original dataset to train, test, and validation datasets with ratios 7:3:0 (lines 7-12). 
-	
-	Lines 15-32 defines the definition of the bias mitigation executed in the \texttt{Demo} model. The bias mitigation is named \texttt{Exponentiated Gradient Reduction} and use the \texttt{Adult} dataset defined at lines 7-12 as its \texttt{dataset}. 
-	
-	The bias mitigation uses three different metrics to analyse the trade-off between accuracy and fairness (mean difference, average odds difference) (lines 27-32) when the prediction uses a Logistic Regression classifier only without debiasing (lines 19-21) and when the prediction is debiased using Exponentiated Gradient Reduction (lines 23-25). The former only uses one parameter; \texttt{'lbfgs'} is set as the \texttt{solver}, while the latter has three parameters; the same classifier is used as the \texttt{estimator}, \texttt{'EqualizedOdds'} is used as the \texttt{constraint}, and the protected attributes are not dropped.
-%\textbf{Is indentation correct here? I'd suggest making keys such as name, description, modules etc. keywords in the LaTeX language definition so that they are shown in bold. Comments should be shown with a different font too.}
-	
+	{Equalised Odds Postprocessing \cite{hardt2016equal,pleiss2017equal} and Calibrated Equalised Odds Postprocessing \cite{pleiss2017equal} try to find probabilities with which to change output labels to optimise equalised odds objectives. The former achieves it by solving linear programs while the latter optimises over calibrated classifier scores. The two equalised odds algorithms have a randomised component, and both can be preferred because of that characteristic. Otherwise, the reject option algorithm is the alternative option since it is deterministic.
+		
+		\section{Model-based Bias Mitigation}
+		\label{sec:model_based_bias_mitigation}
+		
+		This section presents our approach to delivering model-based bias mitigation in machine learning. 
+		
+		%\begin{table*}[]
+		%	\centering
+		%	\caption{Toolkits for bias mitigation in machine learning.}
+		%	\label{tab:bias-mitigation-toolkits}
+		%	\begin{tabular}{p{.15\textwidth}p{.39\textwidth}p{.39\textwidth}}
+			%		\hline
+			%		\multicolumn{1}{c}{\textbf{Toolkit}}                                   & \multicolumn{1}{c}{\textbf{Website}}                                                                                                  & \multicolumn{1}{c}{\textbf{Repository}}                                                                                     \\ \hline
+			%		Fairlearn                                                              & \url{https://fairlearn.org}                                                                                                                 & \url{https://github.com/fairlearn/fairlearn}                                                                                      \\
+			%		Google What-If                                                         & \url{https://pair-code.github.io/what-if-tool}                                                                                              & \url{https://github.com/pair-code/what-if-tool}                                                                                   \\
+			%		Scikit-fairness, Scikit-lego & \url{https://scikit-fairness.netlify.app}, \url{https://scikit-lego.readthedocs.io/en/latest/index.html} & \url{https://github.com/koaning/scikit-fairness},  \url{https://github.com/koaning/scikit-lego} \\
+			%		IBM AI Fairness 360                                                    & \url{https://aif360.mybluemix.net}                                                                                                          & \url{https://github.com/Trusted-AI/AIF360}                                                                                        \\ \hline
+			%	\end{tabular}
+		%\end{table*}
+		
+		\subsection{Toolkit Selection}
+		\label{sec:toolkit_selection}
+		MDSE relies heavily on code generation to produce the code of target software. The generated code often uses existing tools or software libraries to implement certain functions in the respective domains. Machine learning is no exception;
+		there are existing toolkits designed to reduce ethical biases in machine learning that can be leveraged. 
+		
+		Lee et al. \cite{lee2021landscape} analysed the landscape of open-source toolkits in algorithmic ethics, particularly for fair machine learning. With criteria that the toolkit 1) should be open source, 2) is likely to be used by practitioners, and 3) is implementing the fairness-related methodology, and through a focus group discussion of data scientists, they selected the six best toolkits for fair machine learning and used them further in their analysis. The toolkits are Aequitas\cite{saleiro2019aequitas}, Google What-If \cite{googlewhatif2020}, Scikit-fairnet/scikit-lego \cite{scikitfairness2022,scikitlego2022}, Fairlearn\cite{bird2020fairlearn}, and IBM AI Fairness 360 \cite{bellamy2018ai}.  
+		
+		W evaluated these six toolkits to assess their suitability as an infrastructure for our model-based approach. The main criteria for the selection were 1) it should be open source, 2) it should support bias mitigation, 3) it provides Application Programming Interface (API) to be programmable and integrated into the model-based approach, and 4) it supports various bias measurements and mitigation algorithms to enable users to find the best bias mitigation strategies. 
+		
+		All the toolkits meet the first criterion since they are all open-source projects. We excluded Aequitas due to its inability to perform bias mitigation (second criterion); it only supports bias measurement. We also removed Google What-If since it does not have an API\footnote{\url{https://groups.google.com/g/what-if-tool/c/zw4Rk5kxPIM}} to be integrated with other applications (third criterion); its customisation is limited to custom prediction function\footnote{\url{https://pair-code.github.io/what-if-tool/get-started/}}. IBM AI Fairness 360 has more features than the rest. It claims it offers at least ten state-of-the-art bias mitigation algorithms and 77 bias metrics\footnote{\url{https://aif360.mybluemix.net/}} while Fairlearn and Scikit-fairness/lego come second and third \cite{lee2021landscape}. All of them meet the fourth criterion. However, since IBM AI Fairness 360 has more features than the rest, we selected it as the infrastructure for our model-based solution.
+		
+		%Nevertheless, we refer to Fairlearn and Scikit-fairness/lego's code repositories and documentation to understand how bias mitigation was implemented. 
+		
+		%They also identified a lack of consistency between the toolkits in their methodological approaches, and therefore users need to understand them at first before they can use the toolkits properly to meet goals.
+		
+		\subsection{Constructs and Workflow}
+		\label{sec:constructs_and_workflow}
+		
+		To model bias mitigation in machine learning, a Domain-Specific Language should be able to allow users to express the essential constructs and workflows in the domain \cite{volter2013model}. The work in \cite{bellamy2018ai} has documented the important constructs and typical workflows/pipelines in implementing bias mitigation using the IBM AI Fairness 360 toolkit, and we discuss them briefly here.
+		
+		%% Therefore, we opted for document analysis as documents contain information to understand the objects of interest \cite{bowen2009document}. As showcases, Poncin et al. \cite{poncin2011process}, and Rogers et al. \cite{rogers2015using} analysed code repositories and existing documentation to understand software development and maintenance processes. Thus, we analyse the code repository and documentation of IBM AI Fairness 360 to understand its uses and implementation in mitigating bias as they reflect bias mitigation in practice. Our domain analysis aimed to identify essential constructs and workflows in the toolkit's examples, demos, and tutorials. The important constructs are crucial for abstraction so that users only deal with them when constructing models and therefore reduce complexity. Workflow is essential to understand the order in defining and executing the construct.
+		%
+		%%\begin{figure}
+		%%	\includegraphics[width=\linewidth]{figures/workflow}
+		%%	\caption{The workflow of bias mitigation commonly performed using the toolkits in Section \ref{sec:toolkits}.}
+		%%	\label{fig:workflow}
+		%%\end{figure}
+		%
+		
+		\textbf{Set Up Datasets (T01)}. Bias mitigation commonly starts with \textit{datasets} setup. In this task, users define the \textit{source} of every dataset which is commonly a \textit{CSV file}. They also determine which attribute is the \textit{predicted attribute}, including the \textit{favourable class} in the attribute, and the \textit{sensitive attributes} as well as their \textit{privileged} and \textit{unprivileged classes}. The datasets can also be loaded from the \textit{built-in datasets} provided by certain toolkits. 
+		The \textit{training}, \textit{validation}, and \textit{test datasets} are also set here, whether they are all come from different datasets or the same dataset but is \textit{split} in different ratios. They also select the \textit{bias metrics} and \textit{mitigation algorithms} that will be applied to datasets, \textit{models}, and \textit{prediction}. 
+		
+		\textbf{Measure Original Biases Prior to Prediction (T02)}. In this task, users measure the \textit{original biases} of the datasets in different metrics, such as accuracy, mean difference, etc. The results are later used as benchmarks when compared with the measurement results after prediction (T04) or bias mitigation (T06).  
+		
+		\textbf{Train and Predict (T03)}. This task \textit{trains} \textit{models} commonly using certain \textit{classifiers}/\textit{classification algorithms} on the train datasets defined in Task T01. If required, the training can extend to \textit{validation} to tune hyper-parameters in order to obtain the best \textit{parameters} for the models. After that, users use the models to \textit{predict} on the test datasets defined in Task T01. This task can be skipped if a prediction is not required. For example, we want to measure and mitigate biases only in the original datasets (pre-processing).
+		
+		\textbf{Measure Original Biases Post Prediction (T04)}. In this task, users measure the original accuracies and biases after performing the prediction in Task T03. The results are used as benchmarks later when comparing them against biases after bias mitigation. This action is skipped if prediction or Task T03 is not performed.
+		
+		\textbf{Mitigate Bias (T05)}. In this task, users choose the type of de-biasing algorithms -- pre-processing, in-processing, or post-processing -- they want to apply. \textit{Validation} can also be performed if hyper-parameter tuning is required to obtain the best parameters for the de-biasing algorithms.
+		%\begin{itemize}
+		%	\item[a.] \textbf{Pre-processing}. Before model training and prediction, users apply de-biasing algorithms to the (copies of) original datasets.
+		%	\item[b.] \textbf{In-processing}. Users apply de-biasing algorithms to regulate the training process to become fairer for protected groups when predicting.
+		%	\item[c.] \textbf{Post-processing}. Users apply de-biasing algorithms to the prediction results to make them fairer for protected groups. 
+		%\end{itemize}
+		
+		\textbf{Measure Biases After Debiasing (T06)}. In this task, users measure accuracies and biases after applying de-biasing algorithms in Task T05 using the test datasets. 
+		
+		\textbf{Conclude (T07)}. In this task, the biases after de-biasing are compared against the original biases obtained in Tasks T02 and T04. Users then analyse the results to find the best combinations of datasets, classifiers, and de-biasing algorithms with biases and accuracy that fit their purposes. The comparisons can be presented in numbers, tables, and charts to facilitate users to analyse the effects of the datasets, classifiers, and de-biasing algorithms. 
+		
+		\subsection{Metamodel}
+		\label{sec:metamodel}
+		
+		\begin{figure}
+			\includegraphics[width=\linewidth]{figures/metamodel}
+			\caption{The Metamodel of FairML.}
+			\label{fig:metamodel}
+		\end{figure}
+		
+		The constructs identified above have been incorporated into FairML's metamodel so that users can express them when defining their bias mitigation experiments. Figure \ref{fig:metamodel} shows a simplified version of the metamodel. The \texttt{FairML} class represents a project of bias mitigation in machine learning. It can contain one or more datasets and bias mitigations. 
+		
+		The \texttt{Dataset} class defines the datasets. In the class, we specify a dataset's name, predicted attribute, protected attributes, the split ratio between train, test, and validation, and the path of its CSV file.
+		
+		The \texttt{BiasMitigation} class specifies the bias mitigations to be executed in the FairML project. The \textit{name} attribute is used as the identifier of bias mitigations. The class contains three other significant classes: \texttt{TrainingMethod}, \texttt{MitigationMethod}, and \texttt{BiasMetric}. All of them are derived from the \texttt{\textit{Operation}} abstract class since they can be executed, have parameters, and return results. The attributes \textit{name} and \textit{parameters} are used as the identifiers and to define the parameters of operations respectively. The \texttt{algorithm} attribute of the \texttt{Operation} class defines the selected algorithms executed by each deriving class. The \texttt{TrainingMethod} class is responsible to define the classifiers for training and prediction, while the \texttt{MitigationMethod} class specifies the debiasing algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure fairness. 
+		
+		\subsection{FairML Example}
+		\label{sec:fairml_example}	
+		Listing \ref{lst:fairml_model} shows a FairML model, that conforms to the metamodel in Figure\ref{fig:metamodel}, expressed in YAML, and is the FairML version of an IBM AI Fairness 360's example demo\footnote{\url{https://github.com/Trusted-AI/AIF360/blob/master/examples/demo_exponentiated_gradient_reduction.ipynb.}}. 	
+		%	\textbf{We need to explain what the dataset is, what we're trying to predict and where the bias actually lies.}
+		The example uses the \textit{adult}\footnote{\url{https://archive.ics.uci.edu/ml/datasets/Adult}} dataset for training and testing predictive models. Instead of reducing biases in the dataset (pre-processing bias mitigation), the example applies Exponentiated Gradient Reduction technique to reduce biases in the in-processing stage of the machine learning pipeline. It concludes with a comparison of the accuracies and fairness of the models produced with and without the in-processing bias mitigation. The original example has 93 lines of Python code, excluding commented and empty lines, almost three times longer than Listing 1.
+		
+		%	\textbf{One question to anticipate is "what happens if the user mistypes any of these?" (This also applies to algorithm names, parameters etc.)}
+		The model has a name and description, \texttt{Demo} and \texttt{Debiasing using EGR} respectively (lines 3-4). The model has one dataset (line 7) and one bias mitigation (line 15). The dataset is named \texttt{Adult} and is loaded from a csv file, \texttt{load\_preproc\_data\_adult.csv}. We also set \texttt{sex} and \texttt{race} as its protected attributes, \texttt{Income Binary} as the predicted attribute, and split the original dataset to train, test, and validation datasets with ratios 7:3:0 (lines 7-12). 
+		
+		Lines 15-32 defines the definition of the bias mitigation executed in the \texttt{Demo} model. The bias mitigation is named \texttt{Exponentiated Gradient Reduction} and use the \texttt{Adult} dataset defined at lines 7-12 as its \texttt{dataset}. 
+		
+		The bias mitigation uses three different metrics to analyse the trade-off between accuracy and fairness (mean difference, average odds difference) (lines 27-32) when the prediction uses a Logistic Regression classifier only without de-biasing (lines 19-21) and when the prediction is debiased using Exponentiated Gradient Reduction (lines 23-25). The former only uses one parameter; \texttt{'lbfgs'} is set as the \texttt{solver}, while the latter has three parameters; the same classifier is used as the \texttt{estimator}, \texttt{'EqualizedOdds'} is used as the \texttt{constraint}, and the protected attributes are not dropped.
+		%\textbf{Is indentation correct here? I'd suggest making keys such as name, description, modules etc. keywords in the LaTeX language definition so that they are shown in bold. Comments should be shown with a different font too.}
+		
 \begin{lstlisting}[firstnumber=1,style=yaml,caption={Bias mitigation using  Demo Exponentiated Gradient Reduction  expressed in YAML.},label=lst:fairml_model]
 ?nsuri: fairml
 fairml:
@@ -533,12 +533,12 @@ fairml:
   - name: Exponentiated Gradient Reduction  
   - dataset: Adult
 
-- trainingMethod:
-  - algorithm: LogisticRegression
+  - trainingMethod:
+    - algorithm: LogisticRegression
     - parameters: solver='lbfgs'
 
-- mitigationMethod:
-  - algorithm: ExponentiatedGradientReduction
+  - mitigationMethod:
+    - algorithm: ExponentiatedGradientReduction
     - parameters: estimator=LogisticRegression(solver='lbfgs'), constraints='EqualizedOdds', drop_prot_attr=False
 
   - biasMetric:
@@ -548,53 +548,53 @@ fairml:
   - biasMetric:
     - name: average_odds_difference
 \end{lstlisting}
-
-%\begin{lstlisting}[firstnumber=1,style=yaml,caption={Bias mitigation using  Demo Exponentiated Gradient Reduction  expressed in YAML.},label=lst:fairml_model]
-%	?nsuri: fairml
-%	fairml:
-%	- name: Demo
-%	- description: Debiasing using EGR
-%	- modules: from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
-%	
-%	# set the dataset
-%	- dataset:
-%	- name: Adult
-%	- predictedAttribute: income-per-year
-%	- protectedAttributes: sex, race
-%	- trainTestValidationSplit: 7, 3
-%	- datasetPath: data/adult.numeric.csv
-%	- categoricalFeatures: workclass, education, marital-status, occupation, relationship, native-country
-%	
-%	# define the bias mitigation
-%	- biasMitigation:
-%	- name: Exponentiated Gradient Reduction  
-%	- dataset: Adult
-%	
-%	- trainingMethod:
-%	- algorithm: LogisticRegression
-%	- parameters: solver='lbfgs'
-%	
-%	- mitigationMethod:
-%	- algorithm: ExponentiatedGradientReduction
-%	- parameters: estimator=LogisticRegression(solver='lbfgs'), constraints='EqualizedOdds', drop_prot_attr=False
-%	
-%	- biasMetric:
-%	- name: accuracy
-%	- biasMetric:
-%	- name: mean_difference
-%	- biasMetric:
-%	- name: average_odds_difference
-%\end{lstlisting}
-
-	\subsection{Wizard}
-	\label{sec:wizard}
-	While FairML provides the means to specify bias mitigation, users still need to understand all the supported debiasing algorithms and bias metrics in order to use them properly. Being able to help them construct a FairML model using a wizard that asks questions in natural language is important. The wizard follows the decision trees in Figures \ref{fig:wizard-metric} and \ref{fig:wizard-debiasing}, and both have been discussed in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation} respectively.
-%	and should be discussed in more detail in the paper (including presenting the decision flowchart)}
-%	There are many available debiasing algorithms and bias metrics that users can select to mitigate biases in machine learning. Some of them are better than others in a certain context. 
-%	FairML has a wizard feature that assists users in selecting the most appropriate debiasing algorithms and bias metrics based on their answers to the wizard's questions. 
-%	Some of the questions are listed in Listing  \ref{lst:wizard_questions}. The wizard follows the guidances suggested by \cite{mahoney2020ai}, IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}}, and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}}.
-
-	After completing the wizard, FairML automatically generates a FairML model (*.flexmi). The file is modifiable by users if they want to add other or modify existing debiasing algorithms and bias metrics later on. The wizard also automatically generates the Python and Jupyter notebook files of the produced model.
+		
+		%\begin{lstlisting}[firstnumber=1,style=yaml,caption={Bias mitigation using  Demo Exponentiated Gradient Reduction  expressed in YAML.},label=lst:fairml_model]
+		%	?nsuri: fairml
+		%	fairml:
+		%	- name: Demo
+		%	- description: Debiasing using EGR
+		%	- modules: from aif360.algorithms.preprocessing.optim_preproc_helpers.data_preproc_functions import load_preproc_data_adult
+		%	
+		%	# set the dataset
+		%	- dataset:
+		%	- name: Adult
+		%	- predictedAttribute: income-per-year
+		%	- protectedAttributes: sex, race
+		%	- trainTestValidationSplit: 7, 3
+		%	- datasetPath: data/adult.numeric.csv
+		%	- categoricalFeatures: workclass, education, marital-status, occupation, relationship, native-country
+		%	
+		%	# define the bias mitigation
+		%	- biasMitigation:
+		%	- name: Exponentiated Gradient Reduction  
+		%	- dataset: Adult
+		%	
+		%	- trainingMethod:
+		%	- algorithm: LogisticRegression
+		%	- parameters: solver='lbfgs'
+		%	
+		%	- mitigationMethod:
+		%	- algorithm: ExponentiatedGradientReduction
+		%	- parameters: estimator=LogisticRegression(solver='lbfgs'), constraints='EqualizedOdds', drop_prot_attr=False
+		%	
+		%	- biasMetric:
+		%	- name: accuracy
+		%	- biasMetric:
+		%	- name: mean_difference
+		%	- biasMetric:
+		%	- name: average_odds_difference
+		%\end{lstlisting}
+		
+		\subsection{Wizard}
+		\label{sec:wizard}
+		While FairML provides the means to specify bias mitigation, users still need to understand all the supported de-biasing algorithms and bias metrics in order to use them properly. Being able to help them construct a FairML model using a wizard that asks questions in natural language is important. The wizard follows the decision trees in Figures \ref{fig:wizard-metric} and \ref{fig:wizard-debiasing}, and both have been discussed in Sections \ref{sec:bias_metrics} and \ref{sec:bias_mitigation} respectively.
+		%	and should be discussed in more detail in the paper (including presenting the decision flowchart)}
+	%	There are many available de-biasing algorithms and bias metrics that users can select to mitigate biases in machine learning. Some of them are better than others in a certain context. 
+	%	FairML has a wizard feature that assists users in selecting the most appropriate de-biasing algorithms and bias metrics based on their answers to the wizard's questions. 
+	%	Some of the questions are listed in Listing  \ref{lst:wizard_questions}. The wizard follows the guidances suggested by \cite{mahoney2020ai}, IBM AI Fairness 360\footnote{\url{https://aif360.mybluemix.net/resources\#guidance}}, and Aequitas\footnote{\url{http://aequitas.dssg.io/static/images/metrictree.png}}.
+	
+	After completing the wizard, FairML automatically generates a FairML model (*.flexmi). The file is modifiable by users if they want to add other or modify existing de-biasing algorithms and bias metrics later on. The wizard also automatically generates the Python and Jupyter notebook files of the produced model.
 	
 \begin{lstlisting}[firstnumber=1,style=log,caption={Some the questions asked in the FairML's wizard to assist users to select the best debiasing algorithms and bias metrics.},label=lst:wizard_questions]
 ...
@@ -615,14 +615,14 @@ Measure equal fairness (default: false):
 	
 	\subsection{Generation}
 	\label{sec:generation}
-%	\textbf{I'd suggest using FairML to refer to the DSL only (e.g. a transformation that consumes FairML models and produces Python and Jupyter ...)}
-%\textbf{A transformation written in EGL consumes models that conform to the FairML metamodel and produces Python files. The generated Python files are then ... It wouldn't harm to remind the reader what Flexmi is and how it relates to YAML and to also state that the same transformation could have been implemented using any M2T language}
+	%	\textbf{I'd suggest using FairML to refer to the DSL only (e.g. a transformation that consumes FairML models and produces Python and Jupyter ...)}
+	%\textbf{A transformation written in EGL consumes models that conform to the FairML metamodel and produces Python files. The generated Python files are then ... It wouldn't harm to remind the reader what Flexmi is and how it relates to YAML and to also state that the same transformation could have been implemented using any M2T language}
 	Figure \ref{fig:transformation} depicts the transformation that consumes FairML models and produces Python and Jupyter Notebook files. 
 	Users define their bias mitigation models in Flexmi\footnote{\url{https://www.eclipse.org/epsilon/doc/flexmi}} \cite{dimitris2016flexmi}. 
 	Flexmi is a reflective textual syntax for EMF Models \cite{steinberg2009emf} that uses fuzzy matching to map tags and attributes in an XML document to Ecore class/features names \cite{steinberg2009emf} in a target metamodel. Besides supporting the default XML-based format, Flexmi also can read models expressed in the YAML-flavoured format.
 	A transformation written in Epsilon Generation Language (EGL) \cite{rose2008egl} consumes models that conform to the FairML metamodel and produces Python files.
 	Noted that the same transformation could have been implemented using any Model-to-text language.
-%	The model then is transformed by Epsilon Generation Language (EGL) \cite{rose2008egl} engine into Python code. The transformation follows the FairML's EGX/EGL\footnote{\url{https://www.eclipse.org/epsilon/doc/egl/}} rules and conforms to the defined FairML's metamodel in Ecore \cite{steinberg2009emf}. 
+	%	The model then is transformed by Epsilon Generation Language (EGL) \cite{rose2008egl} engine into Python code. The transformation follows the FairML's EGX/EGL\footnote{\url{https://www.eclipse.org/epsilon/doc/egl/}} rules and conforms to the defined FairML's metamodel in Ecore \cite{steinberg2009emf}. 
 	The generated Python files are then transformed into Jupyter notebook files using the P2J\footnote{\url{https://pypi.org/project/p2j/}} engine.
 	
 	\begin{figure}
@@ -633,9 +633,9 @@ Measure equal fairness (default: false):
 	
 	\subsection{Generated Files}
 	\label{sec:generated_files}
-	Based on the model defined in Listing \ref{lst:fairml_model}, FairML generates a Jupyter notebook file containing the code that performs the bias mitigation, an explanation of the bias measured, and references to the selected classifiers and debiasing algorithms to help users understand the applied bias mitigation and metrics measured. It also contains a table and chart that compares the bias metrics measured by different datasets, classifiers, and debiasing algorithms to help users select the best combinations that fit their contexts. 
+	Based on the model defined in Listing \ref{lst:fairml_model}, FairML generates a Jupyter notebook file containing the code that performs the bias mitigation, an explanation of the bias measured, and references to the selected classifiers and de-biasing algorithms to help users understand the applied bias mitigation and metrics measured. It also contains a table and chart that compares the bias metrics measured by different datasets, classifiers, and de-biasing algorithms to help users select the best combinations that fit their contexts. 
 	
-	As an example, Figure \ref{fig:table-output} shows the summary table of the bias measurements produced by Listing \ref{lst:fairml_model}. There are three combinations of prediction. In the first combination, we only measure the Mean Difference, a.k.a. Statistical Parity Difference, in the original dataset. After performing prediction using Logistic Regression, the second combination measures some metrics without any bias mitigation. The table shows the mean difference is slightly worsened to -0.206, moving away from 0, advantaging the privileged group (negative sign). After applying the Exponentiated Gradient Reduction as the debiasing algorithm, the prediction accuracy is slightly reduced to 0.79 but with significant improvement in fairness; both Mean Difference and Average Odds Difference are closer to zero than their values prior the bias mitigation.
+	As an example, Figure \ref{fig:table-output} shows the summary table of the bias measurements produced by Listing \ref{lst:fairml_model}. There are three combinations of prediction. In the first combination, we only measure the Mean Difference, a.k.a. Statistical Parity Difference, in the original dataset. After performing prediction using Logistic Regression, the second combination measures some metrics without any bias mitigation. The table shows the mean difference is slightly worsened to -0.206, moving away from 0, advantaging the privileged group (negative sign). After applying the Exponentiated Gradient Reduction as the de-biasing algorithm, the prediction accuracy is slightly reduced to 0.79 but with significant improvement in fairness; both Mean Difference and Average Odds Difference are closer to zero than their values prior to the bias mitigation.
 	
 	
 	\begin{figure*}
@@ -829,49 +829,49 @@ Measure equal fairness (default: false):
 		%	\end{tabular}
 	%\end{table*}
 	
-%	\begin{table*}[]
-%		\caption{Comparison of numbers of lines of code between original examples (Original LoC), FairML models (Model LoC), and generated code (Generated LoC) as well as the generation time of FairML and the execution time of the original examples and generated code (seconds). See Table \ref{tab:expressiveness1} 
-%			%	and \ref{tab:expressiveness2} 
-%			for the titles of the examples on the second column.}
-%		\label{tab:evaluation}
-%		\begin{tabular}{crrrrrrrrrr}
-%			\hline
-%			\textbf{Code} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Ori\\ LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model\\ LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen\\ LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model  LoC/\\ Ori  LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Model LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generation\\ Time\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Original\\ Exec Time\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generated\\ Exec Time\end{tabular}}} &
-%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Time\end{tabular}}} \\ \hline
-%			E01 & 133 & 41 & 128 & 0.31 & 3.12 & 0.96 & 0.17 & 96.21 & 102.98 & 1.07 \\
-%			E02 & 257 & 37 & 170 & 0.14 & 4.59 & 0.66 & 0.17 & 7.93 & 2.33 & 0.29 \\
-%			E03 & 50 & 50 & 375 & 1.00 & 7.50 & 7.50 & 0.19 & 20.99 & 20.23 & 0.96 \\
-%			E04 & 93 & 33 & 118 & 0.35 & 3.58 & 1.27 & 0.17 & 29.93 & 30.21 & 1.01 \\
-%			E05 & 103 & 37 & 91 & 0.36 & 2.46 & 0.88 & 0.16 & 218.05 & 207.78 & 0.95 \\
-%			E06 & 95 & 67 & 345 & 0.71 & 5.15 & 3.63 & 0.20 & 12.99 & 14.67 & 1.13 \\
-%			E07 & 35 & 30 & 86 & 0.86 & 2.87 & 2.46 & 0.14 & 8.04 & 15.52 & 1.93 \\
-%			E08 & 143 & 61 & 146 & 0.43 & 2.39 & 1.02 & 0.16 & 12.97 & 15.57 & 1.20 \\
-%			E09 & 212 & 59 & 138 & 0.28 & 2.34 & 0.65 & 0.17 & 1.46 & 4.63 & 3.17 \\
-%			E10 & 52 & 55 & 176 & 1.06 & 3.20 & 3.38 & 0.17 & 3.39 & 3.88 & 1.14 \\
-%			E11 & 30 & 25 & 85 & 0.83 & 3.40 & 2.83 & 0.17 & 0.02 & 0.08 & 4.59 \\
-%			E12 & 356 & 90 & 644 & 0.25 & 7.16 & 1.81 & 0.22 & 34.90 & 54.25 & 1.55 \\
-%			%		E13 & 54  &    &     &      &      &      &       &        &        &      \\
-%			%		E14 & 54  &    &     &      &      &      &       &        &        &      \\
-%			%		E15 & 54  &    &     &      &      &      &       &        &        &      \\
-%			%		E16 & 54  &    &     &      &      &      &       &        &        &      \\
-%			%		E17 & 54  &    &     &      &      &      &       &        &        &      \\
-%			%		E18 & 52  &    &     &      &      &      &       &        &        &      \\
-%			%		E19 & 64  &    &     &      &      &      &       &        &        &      \\
-%			%		E20 & 66  &    &     &      &      &      &       &        &        &      \\
-%			%		E21 & 82  &    &     &      &      &      &       &        &        &      \\ 
-%			\hline
-%		\end{tabular}
-%	\end{table*}
-%	
+	%	\begin{table*}[]
+		%		\caption{Comparison of numbers of lines of code between original examples (Original LoC), FairML models (Model LoC), and generated code (Generated LoC) as well as the generation time of FairML and the execution time of the original examples and generated code (seconds). See Table \ref{tab:expressiveness1} 
+			%			%	and \ref{tab:expressiveness2} 
+			%			for the titles of the examples on the second column.}
+		%		\label{tab:evaluation}
+		%		\begin{tabular}{crrrrrrrrrr}
+			%			\hline
+			%			\textbf{Code} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Ori\\ LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model\\ LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen\\ LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Model  LoC/\\ Ori  LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Model LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen LoC/\\ Ori LoC\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generation\\ Time\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Original\\ Exec Time\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Generated\\ Exec Time\end{tabular}}} &
+			%			\multicolumn{1}{c}{\textbf{\begin{tabular}[c]{@{}c@{}}Gen/Ori\\ Time\end{tabular}}} \\ \hline
+			%			E01 & 133 & 41 & 128 & 0.31 & 3.12 & 0.96 & 0.17 & 96.21 & 102.98 & 1.07 \\
+			%			E02 & 257 & 37 & 170 & 0.14 & 4.59 & 0.66 & 0.17 & 7.93 & 2.33 & 0.29 \\
+			%			E03 & 50 & 50 & 375 & 1.00 & 7.50 & 7.50 & 0.19 & 20.99 & 20.23 & 0.96 \\
+			%			E04 & 93 & 33 & 118 & 0.35 & 3.58 & 1.27 & 0.17 & 29.93 & 30.21 & 1.01 \\
+			%			E05 & 103 & 37 & 91 & 0.36 & 2.46 & 0.88 & 0.16 & 218.05 & 207.78 & 0.95 \\
+			%			E06 & 95 & 67 & 345 & 0.71 & 5.15 & 3.63 & 0.20 & 12.99 & 14.67 & 1.13 \\
+			%			E07 & 35 & 30 & 86 & 0.86 & 2.87 & 2.46 & 0.14 & 8.04 & 15.52 & 1.93 \\
+			%			E08 & 143 & 61 & 146 & 0.43 & 2.39 & 1.02 & 0.16 & 12.97 & 15.57 & 1.20 \\
+			%			E09 & 212 & 59 & 138 & 0.28 & 2.34 & 0.65 & 0.17 & 1.46 & 4.63 & 3.17 \\
+			%			E10 & 52 & 55 & 176 & 1.06 & 3.20 & 3.38 & 0.17 & 3.39 & 3.88 & 1.14 \\
+			%			E11 & 30 & 25 & 85 & 0.83 & 3.40 & 2.83 & 0.17 & 0.02 & 0.08 & 4.59 \\
+			%			E12 & 356 & 90 & 644 & 0.25 & 7.16 & 1.81 & 0.22 & 34.90 & 54.25 & 1.55 \\
+			%			%		E13 & 54  &    &     &      &      &      &       &        &        &      \\
+			%			%		E14 & 54  &    &     &      &      &      &       &        &        &      \\
+			%			%		E15 & 54  &    &     &      &      &      &       &        &        &      \\
+			%			%		E16 & 54  &    &     &      &      &      &       &        &        &      \\
+			%			%		E17 & 54  &    &     &      &      &      &       &        &        &      \\
+			%			%		E18 & 52  &    &     &      &      &      &       &        &        &      \\
+			%			%		E19 & 64  &    &     &      &      &      &       &        &        &      \\
+			%			%		E20 & 66  &    &     &      &      &      &       &        &        &      \\
+			%			%		E21 & 82  &    &     &      &      &      &       &        &        &      \\ 
+			%			\hline
+			%		\end{tabular}
+		%	\end{table*}
+	%	
 	\section{Evaluation}
 	\label{sec:evaluation}
 	We have evaluated the expressiveness, correctness, productivity, and execution time of FairML. For expressiveness evaluation, we aimed to answer this question, 
@@ -883,19 +883,19 @@ Measure equal fairness (default: false):
 	We used the 12 examples that come in version 3.0 of the toolkit.
 	%Among 22 examples in version 3.0, we only used 21 of them, 
 	%since the one that we excluded only explains the use of a class dedicated to yield bias metric explanation in JSON format. 
-	We identify all the elements -- bias metrics, debiasing algorithms, classifiers, and datasets -- used each example to measure its complexity. More elements covered by the examples more complex cases FairML can express.
+	We identified all the elements -- bias metrics, de-biasing algorithms, classifiers, and datasets -- used in each example to measure its complexity. More elements covered by the examples more complex cases FairML can express.
 	
-	We compared the bias metric values measured (measurement values) in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal or similar values, within the range of $\pm$ 0.1 tolerance, when randomness is involved.
+	We compared the bias metric values measured (measurement values) in the original examples with the values measured in the generated code to evaluate the correctness of FairML's generated code. Both should produce equal or similar values, within the range of $\pm$ 0.1 tolerance when randomness is involved.
 	
 	For productivity evaluation, 
 	we compared the ratio of the written vs. generated code of FairML vs.
 	Code in the examples. 
 	While this metric does not always guarantee productivity due to many factors (see Section \ref{sec:threats_to_validity}), 
-	the number of lines written by users is significantly reduced. In the measurement whitespace and commented lines were not counted.
+	the number of lines written by users is significantly reduced. In the measurement, whitespace and commented lines were not counted.
 	
 	We also measured the execution time of FairML. First, we measured the \textit{generation time} -- the time that FairML takes to generate the bias detection and mitigation code. Second, we compared the time taken by the generated target code against the example code to complete their operations (\textit{generated execution time} vs. \textit{original execution time}). The evaluation was performed on a machine with Windows 10 64-bit operating system, 11th Gen Intel(R) Core(TM) i9-11900H @ 2.50GHz 8-core processors, 32.0 GB RAM DDR4, OpenJDK Runtime Environment 18.9 (build 11.0.14.1+1), and Python 3.9.7.
 	
-		\begin{figure*}
+	\begin{figure*}
 		\centering
 		\begin{subfigure}{0.33\textwidth}
 			\includegraphics[width=\textwidth]{figures/eval-productivity.pdf}
@@ -914,10 +914,10 @@ Measure equal fairness (default: false):
 			\caption{original vs. generated code's execution time}
 			\label{fig:eval-execution-time}
 		\end{subfigure}
-			\caption{The evaluation of FairML on productivity, generation time, and execution time.}
+		\caption{The evaluation of FairML on productivity, generation time, and execution time.}
 		\label{fig:evaluation}
 	\end{figure*}
-
+	
 	
 	\subsection{Results and Discussion}
 	\label{sec:result_and_discussion}
@@ -939,13 +939,13 @@ Measure equal fairness (default: false):
 	(Accuracy, Balanced Accuracy, Mean Difference, Statistical Parity Difference, Disparate Impact, Equal Opportunity Difference, Theil Index, Gamma Disparity, Average Odds Difference, Mean Absolute Error, False Positive Rate, False Negative Rate, False Discovery Rate). 
 	%(Accuracy, Balanced Accuracy, Mean Difference a.k.a. Statistical Parity Difference, Disparate Impact, Equal Opportunity Difference, Theil Index, Gamma Disparity, Average Odds Difference, Mean Absolute Error, MDSS Bias Score, False Positive Rate, False Negative Rate, False Discovery Rate, Rrror Rate, Mean Absolute Error). 
 	In addition, FairML also supports loading data from external CSV files. 
-	These allow users to express their bias mitigation strategies in different combinations of datasets, classifiers, debiasing algorithms, and bias metrics.
+	These allow users to express their bias mitigation strategies in different combinations of datasets, classifiers, de-biasing algorithms, and bias metrics.
 	
 	Regarding correctness, due to the randomness in machine learning processes, not all values produced by the generated code are exactly equal to their respective values in the examples. However, the values are still within the range of $\pm$ 0.1 tolerance of their respective ones.
 	
-%	Thus, we use $\pm$ 0.1 tolerance for the differences to ensure that the generated code's values are almost equal to their respective ones.
+	%	Thus, we use $\pm$ 0.1 tolerance for the differences to ensure that the generated code's values are almost equal to their respective ones.
 	
-%	\textbf{Explain more clearly that in all scenarios results were within 0.1 percent of the original results?}
+	%	\textbf{Explain more clearly that in all scenarios, results were within 0.1 percent of the original results?}
 	
 	
 	%From all $N$ measurement values in Tables \ref{tab:expressiveness1} and \ref{tab:expressiveness2}, equal values comprise $N1$ values, while the tolerated values cover only $N2$ values.  
@@ -953,7 +953,7 @@ Measure equal fairness (default: false):
 	\subsubsection{Productivity}
 	\label{sec:productivity}
 	
-	Figure \ref{fig:eval-productivity} shows a comparison of the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that model LoC (solid line) tends to be less than original LoC (dashed line), indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases.  From examples \textsf{E11} (leftmost) to \textsf{E12} (rightmost), where original LoC goes up from 30 to 356, we can notice the pattern that the efficiency is also increased with users only need to write from 83\% to 25\% of the LoC in their respective original eamples.
+	Figure \ref{fig:eval-productivity} shows a comparison of the numbers of lines of code (LoC) between the original examples, FairML models, and generated code. It shows that model LoC (solid line) tends to be less than the original LoC (dashed line), indicating that users would write less code to produce the same results as in the examples (see Section \ref{sec:expressiveness_and_correctness} for correctness). Moreover, the efficiency also gets higher as the number of original LoC increases. From examples \textsf{E11} (leftmost) to \textsf{E12} (rightmost), where original LoC goes up from 30 to 356, we can notice the pattern that the efficiency is also increased with users only need to write from 83\% to 25\% of the LoC in their respective original examples.
 	
 	We do expect that FairML generates more LoC (dotted line) than the original examples as they contain features that are not included in the original examples, such as (1) the code for explaining the classifiers, bias mitigation algorithms, and bias metrics being used, as well as (2) different approach in displaying measurement results in the forms of summary tables and charts. 
 	
@@ -966,8 +966,8 @@ Measure equal fairness (default: false):
 	
 	Figure \ref{fig:eval-generation-time} shows the duration -- generation time -- taken by FairML to produce generated code. 	
 	In terms of generation time, 
-	FairML can generate every generated-code version of the original examples in less that 0.2 seconds, 
-	and it can achieve the rate 2,927 lines/second (644 lines/0.22 seconds) based on the example E12. 
+	FairML can generate every generated-code version of the original examples in less than 0.2 seconds, 
+	and it can achieve the rate of 2,927 lines/second (644 lines/0.22 seconds) based on the example E12. 
 	
 	Figure \ref{fig:eval-execution-time} shows the performance of the generated code on execution time against the original examples (in seconds). In general, the execution time of the generated code (solid line) takes slightly more time than the original examples (dotted line). 
 	We do anticipate this as the generated-code versions have more features -- having more lines of code --
@@ -975,8 +975,8 @@ Measure equal fairness (default: false):
 	
 	\subsection{Threats to Validity}
 	\label{sec:threats_to_validity}	
-%	mention the threat that fewer lines of model/code does not necessarily mean better productivity (this is where user experiments would have been useful). 
-	While we have tested FairML with the examples of IBM AI Fairness 360, we have not performed user evaluation due to limited resources to obtain feedback from experienced users in the field. First, user feedback is useful to gain insights into productivity as writing fewer lines of code to express bias mitigation model, productivity evaluation in Section \ref{sec:productivity}, does not necessarily mean better productivity due to different factors \cite{sadowski2019rethinking}. Second, the user feedback is crucial to capture the workflows of bias mitigation in practice. IBM AI Fairness 360's examples can be too simple for real-world cases and therefore invalidate the expressiveness evaluation in Section \ref{sec:expressiveness_and_correctness}. These threat has been identified by \cite{lee2021landscape} as the adoption of fairness toolkits is still not a common practice.
+	%	mention the threat that fewer lines of model/code does not necessarily mean better productivity (this is where user experiments would have been useful). 
+	While we have tested FairML with the examples of IBM AI Fairness 360, we have not performed user evaluation due to limited resources to obtain feedback from experienced users in the field. First, user feedback is useful to gain insights into productivity as writing fewer lines of code to express bias mitigation model, productivity evaluation in Section \ref{sec:productivity}, does not necessarily mean better productivity due to different factors \cite{sadowski2019rethinking}. Second, user feedback is crucial to capture the workflows of bias mitigation in practice. IBM AI Fairness 360's examples can be too simple for real-world cases and therefore invalidate the expressiveness evaluation in Section \ref{sec:expressiveness_and_correctness}. These threat has been identified by \cite{lee2021landscape} as the adoption of fairness toolkits is still not a common practice.
 	
 	\section{Lessons Learned}
 	\label{sec:lessons_learned}
@@ -1005,7 +1005,7 @@ Measure equal fairness (default: false):
 	This paper presents FairML, a toolkit that implements a model-based approach to automate bias mitigation. Using FairML, users can generate bias mitigation code by writing fewer lines in YAML than writing the code in Python.
 	In terms of correctness, the generated code produces similar bias metric values to the ones measured in the original examples.
 	
-	For the future work, the number of lines of code generated by FairML can still be further reduced by merging repeatable lines into functions and removing unnecessary code determined by firstly performing static analysis. 
+	For future work, the number of lines of code generated by FairML can still be further reduced by merging repeatable lines into functions and removing unnecessary code determined by firstly performing static analysis. 
 	As the knock-on effect, removing unnecessary code can optimise the execution time of the generated code.
 	
 	

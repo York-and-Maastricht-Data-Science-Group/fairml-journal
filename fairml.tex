@@ -35,8 +35,8 @@
 %%
 %%
 %% The first command in your LaTeX source must be the \documentclass command.
-%\documentclass[sigconf]{acmart}
-\documentclass[sigconf,review]{acmart}
+\documentclass[sigconf]{acmart}
+%\documentclass[sigconf,review]{acmart}
 
 \usepackage{subcaption}
 \usepackage{graphicx}
@@ -90,16 +90,27 @@
 %% values in them; it is your responsibility as an author to replace
 %% the commands and values with those provided to you when you
 %% complete the rights form.
-\setcopyright{acmcopyright}
+%\setcopyright{acmcopyright}
+%\copyrightyear{2022}
+%\acmYear{2022}
+%\acmDOI{XXXXXXX.XXXXXXX}
+%
+%%% These commands are for a PROCEEDINGS abstract or paper.
+%\acmConference[MODELS '22]{ACM / IEEE 25th International Conference on Model Driven Engineering Languages and Systems}{October 23--28,
+%	2022}{Montreal, Canada}
+%\acmPrice{15.00}
+%\acmISBN{978-1-4503-XXXX-X/22/10}
+
 \copyrightyear{2022}
 \acmYear{2022}
-\acmDOI{XXXXXXX.XXXXXXX}
-
-%% These commands are for a PROCEEDINGS abstract or paper.
-\acmConference[MODELS '22]{ACM / IEEE 25th International Conference on Model Driven Engineering Languages and Systems}{October 23--28,
-	2022}{Montreal, Canada}
+\setcopyright{acmcopyright}\acmConference[MODELS '22]{ACM/IEEE 25th
+	International Conference on Model Driven Engineering Languages and
+	Systems}{October 23--28, 2022}{Montreal, QC, Canada}
+\acmBooktitle{ACM/IEEE 25th International Conference on Model Driven Engineering
+	Languages and Systems (MODELS '22), October 23--28, 2022, Montreal, QC, Canada}
 \acmPrice{15.00}
-\acmISBN{978-1-4503-XXXX-X/22/10}
+\acmDOI{10.1145/3550355.3552401}
+\acmISBN{978-1-4503-9466-6/22/10}
 
 
 %%

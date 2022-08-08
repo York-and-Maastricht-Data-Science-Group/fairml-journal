@@ -505,11 +505,11 @@
 			\label{fig:metamodel}
 		\end{figure}
 		
-		The constructs identified above have been incorporated into FairML's metamodel so that users can express them when defining their bias mitigation experiments. Figure \ref{fig:metamodel} shows a simplified version of the metamodel. The \texttt{FairML} class represents a project of bias mitigation in machine learning. It can contain one or more datasets and bias mitigations. 
+		The constructs identified above have been incorporated into the metamodel of FairML so that users can express them when defining their bias mitigation experiments. Figure \ref{fig:metamodel} shows a simplified version of the metamodel. The \texttt{FairML} class represents a project of bias mitigation in machine learning. It can contain one or more datasets and bias mitigations. 
 		
 		The \texttt{Dataset} class defines the datasets. In the class, we specify a dataset's name, predicted attribute, protected attributes, the split ratio between train, test, and validation, and the path of its CSV file.
 		
-		The \texttt{BiasMitigation} class specifies the bias mitigations to be executed in the FairML project. The \textit{name} attribute is used as the identifier of bias mitigations. The class composes three other significant classes: \texttt{TrainingMethod}, \texttt{MitigationMethod}, and \texttt{BiasMetric}. All of them are derived from the \texttt{\textit{Operation}} abstract class since they can be executed, have parameters, and return results. The attributes \textit{name} and \textit{parameters} are used as the identifiers and to define the parameters of operations respectively. The \texttt{algorithm} attribute of the \texttt{Operation} class defines the selected algorithms executed by each deriving class. The \texttt{TrainingMethod} class is responsible to define the classifiers for training and prediction, while the \texttt{MitigationMethod} class specifies the debiasing algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure fairness. 
+		The \texttt{BiasMitigation} class specifies the bias mitigations to be executed in the FairML project. The \textit{name} attribute is used as the identifier of bias mitigations. The class composes three other significant classes: \texttt{Training\-Method}, \texttt{Mitigation\-Method}, and \texttt{Bias\-Metric}. All are derived from the \texttt{\textit{Operation}} abstract class since they can be executed, have parameters, and return results. The attributes \textit{name} and \textit{parameters} are used as the identifiers and to define the parameters of operations respectively. The \texttt{algorithm} attribute of the \texttt{Operation} class defines the selected algorithms executed by each deriving class. The \texttt{TrainingMethod} class is responsible to define the classifiers for training and prediction, while the \texttt{MitigationMethod} class specifies the debiasing algorithms for bias mitigation. \texttt{BiasMetric} class determines the metrics to be used to measure fairness. 
 		
 		\subsection{FairML Example}
 		\label{sec:fairml_example}	
@@ -607,7 +607,7 @@ fairml:
 	
 	After completing the wizard, FairML automatically generates a FairML model n Flexmi (see below). The file is modifiable by users if they want to add other or modify existing debiasing algorithms and bias metrics later on. The wizard also automatically generates the Python and Jupyter notebook files of the produced model.
 	
-\begin{lstlisting}[firstnumber=1,style=log,caption={Some the questions asked in the FairML's wizard to assist users to select the best debiasing algorithms and bias metrics.},label=lst:wizard_questions]
+\begin{lstlisting}[firstnumber=1,style=log,caption={Some of the questions asked in the FairML's wizard to assist users to select the best debiasing algorithms and bias metrics.},label=lst:wizard_questions]
 ...
 ---- Mitigation Algorithm ----
 # 1. Pre-processing
@@ -991,7 +991,7 @@ Measure equal fairness (default: false):
 	\subsection{Threats to Validity}
 	\label{sec:threats_to_validity}	
 %	%	mention the threat that fewer lines of model/code does not necessarily mean better productivity (this is where user experiments would have been useful). 
-	While we have developed and tested FairML based on the documentation and examples of IBM AI Fairness 360, we have not performed user evaluation resources to obtain feedback from experienced users in the field. This would require the participation of a number of data scientists with experience in bias identification and mitigation, which is a very scarce resource \cite{lee2021landscape}. Nevertheless, the documentation and the examples we reproduced were written by experts and the data they operate on are real-world data from a variety of domains.
+	While we have developed and tested FairML based on the documentation and examples of IBM AI Fairness 360, we have not performed user evaluation to obtain feedback from experienced users in the field. This would require the participation of a number of data scientists with experience in bias identification and mitigation, which is a very scarce resource \cite{lee2021landscape}. Nevertheless, the documentation and the examples we reproduced were written by experts and the data they operate on are real-world data from a variety of domains.
 %	First, user feedback is useful to gain insights into productivity as writing fewer lines of code to express bias mitigation model, productivity evaluation in Section \ref{sec:productivity}, does not necessarily mean better productivity due to different factors \cite{sadowski2019rethinking}. 
 %	Second, user feedback is crucial to capture the workflows of bias mitigation in practice. IBM AI Fairness 360's examples can be too simple for real-world cases and therefore invalidate the expressiveness evaluation in Section \ref{sec:expressiveness_and_correctness}. These threats has been identified by \cite{lee2021landscape} as the adoption of fairness toolkits is still not a common practice.
 	
@@ -1041,9 +1041,7 @@ Some lessons that we learnt from this work are:
 	
 	\section{Acknowledgements}
 	\label{sec:acknowledgements}
-	This work has been funded through the York-Maastricht
-	partnership's Responsible Data Science by Design programme
-	(\url{https://www.york.ac.uk/maastricht}).
+	This work has been funded through the York-Maastricht partnership's Responsible Data Science by Design programme (\url{https://www.york.ac.uk/maastricht}). We thank the Maastricht team for all their valuable contributions.
 	
 	%% The Appendices part is started with the command \appendix;
 	%% appendix sections are then done as normal sections

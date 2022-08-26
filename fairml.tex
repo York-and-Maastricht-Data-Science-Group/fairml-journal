@@ -136,6 +136,10 @@
 %% end of the preamble, start of the body of the document source.
 \begin{document}
 	
+	\acmBadgeL[https://www.acm.org/publications/policies/artifact-review-and-badging-current\#reusable]{images/artifacts_evaluated_reusable_v1_1}
+	\acmBadgeR[https://www.acm.org/publications/policies/artifact-review-and-badging-current\#available]{images/artifacts_available_v1_1}
+	
+	
 	%%
 	%% The "title" command has an optional parameter,
 	%% allowing the author to define a "short title" to be used in page headers.
@@ -316,7 +320,7 @@
 	
 	Model-Driven Software Development (MDSE) leverages the abstraction of software development by hiding technical details of implementations that can be automated \cite{brambilla2017model}. Thus, users can focus on essential aspects through the use of simpler modelling languages, and the target implementation can be automatically generated, which in turn improves productivity \cite{volter2013model}. The use of MDSE would benefit data scientists since it allows them to search for the best bias mitigation methods for given cases at a higher abstraction level. They also do not have to code the implementation of the search process in general/statistical programming languages since it can be automatically generated and then fine-tuned later on. 
 	
-	In this paper, we introduce FairML\footnote{FairML prototype can be found at \url{https://github.com/York-and-Maastricht-Data-Science-Group/fairml}}, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
+	In this paper, we introduce FairML\footnote{FairML prototype can be found at \url{https://doi.org/10.5281/zenodo.7007839} and \url{https://github.com/York-and-Maastricht-Data-Science-Group/fairml}}, a tool that implements the MDSE approach to model and automate bias measurement and mitigation in machine learning. 
 	\begin{enumerate}
 		\item FairML raises the abstraction of bias measurement and mitigation so that users can configure their bias mitigation model in YAML (YAML Ain't Markup Language), a human-friendly declarative language \cite{evans2017yaml}, without having to code in general/statistical programming languages.
 		\item FairML supports a certain degree of expressiveness, allowing users to experiment with different kinds of bias metrics, bias mitigation algorithms, datasets, classifiers, and their parameters to find the best combinations that reduce biases but with acceptable accuracy.
